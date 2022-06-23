@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // Imports
+const cors_1 = __importDefault(require("cors"));
 require("dotenv").config();
 const passport_1 = __importDefault(require("passport"));
 const express_session_1 = __importDefault(require("express-session"));
@@ -20,6 +21,7 @@ const day = 86400000;
 const port = process.env.SERVER_PORT;
 const memoryStore = new express_session_1.default.MemoryStore();
 // Middleware
+app.use((0, cors_1.default)({ origin: ["http://localhost:3000"] }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, express_session_1.default)({

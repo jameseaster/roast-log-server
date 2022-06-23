@@ -1,4 +1,5 @@
 // Imports
+import cors from "cors";
 require("dotenv").config();
 import passport from "passport";
 import session from "express-session";
@@ -19,6 +20,7 @@ const port = process.env.SERVER_PORT;
 const memoryStore = new session.MemoryStore();
 
 // Middleware
+app.use(cors({ origin: ["http://localhost:3000"] }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
