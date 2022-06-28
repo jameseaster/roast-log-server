@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -18,43 +29,58 @@ const database_1 = require("../database");
 const passport_local_1 = require("passport-local");
 const sqlStatements_1 = require("../utils/sqlStatements");
 const helpers_1 = require("../utils/helpers");
-passport_1.default.serializeUser((req, user, done) => {
-    done(null, user);
-});
-passport_1.default.deserializeUser((user, done) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { email } = user;
-        // Get user by email
-        const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
-        const [rows] = yield database_1.db.promise().query(sqlStr);
-        const dbUser = rows[0];
-        if (!dbUser)
-            done(new Error("User not found"), false);
-        done(null, dbUser /* This is what will be stored on the req.user object */);
-    }
-    catch (err) {
-        done(err, false);
-    }
-}));
-passport_1.default.use(new passport_local_1.Strategy({ usernameField: "email" }, (email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
+// Use these fields from database
+const customFields = {
+    usernameField: "email",
+    passwordField: "password",
+};
+// Used to verify the user
+const verifyCallback = (email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Check for email & password
-        if (!email || !password)
-            done(new Error("Missing credentials"), null);
+        if (!email || !password) {
+            return done(null, false, { msg: "Missing credentials" });
+        }
+        // Check for exisiting user
         const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
         const [rows] = yield database_1.db.promise().query(sqlStr);
         const dbUser = rows[0];
         // If user is not found
-        if (!dbUser)
-            done(new Error("User not found"), null);
+        if (!dbUser) {
+            return done(null, false, { msg: "User not found" });
+        }
         // Check password hashes
         const isValid = (0, helpers_1.comparePasswords)(password, dbUser.password);
-        if (isValid)
-            done(null, dbUser);
-        else
-            done(new Error("Incorrect credentials"), null);
+        return isValid
+            ? done(null, dbUser)
+            : done(null, false, { msg: "Incorrect credentials" });
     }
     catch (err) {
-        done(err, null);
+        done(err);
     }
-})));
+});
+// Serialize user
+passport_1.default.serializeUser((req, user, done) => {
+    done(null, user.email);
+});
+// Deserialize user
+passport_1.default.deserializeUser((email, done) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Get user by email
+        const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
+        const [rows] = yield database_1.db.promise().query(sqlStr);
+        const dbUser = rows[0];
+        const { password: _ } = dbUser, rest = __rest(dbUser, ["password"]);
+        return !dbUser
+            ? done(null, false)
+            : // "rest" is what will be stored on the req.user object
+                done(null, rest);
+    }
+    catch (err) {
+        done(err);
+    }
+}));
+// Local strategy
+const strategy = new passport_local_1.Strategy(customFields, verifyCallback);
+// Passport middleware
+passport_1.default.use(strategy);

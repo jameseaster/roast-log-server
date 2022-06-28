@@ -5,7 +5,7 @@ import { sql } from "../utils/sqlStatements";
 import { hashPassword, resErrors } from "../utils/helpers";
 import { Router, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { authenticateSignupRequest } from "../utils/helpers";
+import { authenticateSignupParams } from "../utils/helpers";
 
 // Constants
 const router = Router();
@@ -15,10 +15,19 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
   res.status(200).send("Logged in");
 });
 
+// Logout
+router.post("/logout", async (req: any, res) => {
+  req.logout((err: any) => {
+    return err
+      ? res.status(400).send(`Failed to logout: ${err}`)
+      : res.status(200).send("Successfully logged out");
+  });
+});
+
 // Sign up with validated email & password
 router.post(
   "/signup",
-  authenticateSignupRequest(),
+  authenticateSignupParams(),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

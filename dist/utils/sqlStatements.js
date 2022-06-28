@@ -6,5 +6,6 @@ const sqlStatements = {
     addUser: (e, p) => `insert into users(email, password) values('${e}', '${p}');`,
     getAllEmails: () => "select email from users;",
     getUserByEmail: (e) => `select * from users where email = '${e}';`,
+    getSessionInfo: () => `select * from sessions`,
 };
 exports.sql = sqlStatements;

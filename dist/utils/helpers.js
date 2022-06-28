@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateSignupRequest = exports.comparePasswords = exports.authenticate = exports.hashPassword = exports.resErrors = void 0;
+exports.authenticateSignupParams = exports.comparePasswords = exports.authenticate = exports.hashPassword = exports.resErrors = void 0;
 // Imports
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const index_1 = require("../database/index");
@@ -29,20 +29,18 @@ function comparePasswords(raw, hash) {
     return bcryptjs_1.default.compareSync(raw, hash);
 }
 exports.comparePasswords = comparePasswords;
-// Checks for user object on request
+// Checks to see if user is authenticated
 const authenticate = (req, res, next) => {
-    if (req.user)
+    if (req.isAuthenticated())
         next();
     else
         res.status(401).send(resErrors(["Not logged in"]));
 };
 exports.authenticate = authenticate;
 /**
- * Authenticate sign up POST request
- * Check for email length, if email already exists,
- * password length, passwords match
+ * Authenticate sign up email & password values
  */
-const authenticateSignupRequest = () => [
+const authenticateSignupParams = () => [
     (0, express_validator_1.check)("email")
         .notEmpty()
         .withMessage("Email cannot be empty")
@@ -73,9 +71,9 @@ const authenticateSignupRequest = () => [
         throw new Error("Passwords must match");
     }),
 ];
-exports.authenticateSignupRequest = authenticateSignupRequest;
+exports.authenticateSignupParams = authenticateSignupParams;
 // Returns an error object with an array of error messages
 const resErrors = (errors) => {
-    return { errors: errors.map((e) => ({ msg: e })) };
+    return { errors: errors.map((e) => ({ message: e })) };
 };
 exports.resErrors = resErrors;

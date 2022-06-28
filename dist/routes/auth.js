@@ -28,8 +28,16 @@ exports.authRoutes = router;
 router.post("/login", passport_1.default.authenticate("local"), (req, res) => {
     res.status(200).send("Logged in");
 });
+// Logout
+router.post("/logout", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    req.logout((err) => {
+        return err
+            ? res.status(400).send(`Failed to logout: ${err}`)
+            : res.status(200).send("Successfully logged out");
+    });
+}));
 // Sign up with validated email & password
-router.post("/signup", (0, helpers_2.authenticateSignupRequest)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/signup", (0, helpers_2.authenticateSignupParams)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         return res.status(404).json({ errors: errors.array() });

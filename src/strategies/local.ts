@@ -5,6 +5,7 @@ import { RowDataPacket } from "mysql2";
 import { Strategy } from "passport-local";
 import { sql } from "../utils/sqlStatements";
 import { comparePasswords } from "../utils/helpers";
+import { Express } from "express";
 
 // Types
 interface IUser {
@@ -20,40 +21,61 @@ interface IResponseUser extends RowDataPacket {
   password: string;
 }
 
-passport.serializeUser<any, any>((req, user, done) => {
-  done(null, user);
+// Use these fields from database
+const customFields = {
+  usernameField: "email",
+  passwordField: "password",
+};
+
+// Used to verify the user
+const verifyCallback = async (email: string, password: string, done: any) => {
+  try {
+    // Check for email & password
+    if (!email || !password) {
+      return done(null, false, { msg: "Missing credentials" });
+    }
+    // Check for exisiting user
+    const sqlStr = sql.getUserByEmail(email);
+    const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
+    const dbUser = rows[0];
+    // If user is not found
+    if (!dbUser) {
+      return done(null, false, { msg: "User not found" });
+    }
+    // Check password hashes
+    const isValid = comparePasswords(password, dbUser.password);
+    return isValid
+      ? done(null, dbUser)
+      : done(null, false, { msg: "Incorrect credentials" });
+  } catch (err) {
+    done(err);
+  }
+};
+
+// Serialize user
+passport.serializeUser<any, any>((req, user: any, done) => {
+  done(null, user.email);
 });
 
-passport.deserializeUser(async (user: IUser, done) => {
+// Deserialize user
+passport.deserializeUser(async (email: string, done) => {
   try {
-    const { email } = user;
     // Get user by email
     const sqlStr = sql.getUserByEmail(email);
     const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
     const dbUser = rows[0];
-    if (!dbUser) done(new Error("User not found"), false);
-    done(null, dbUser /* This is what will be stored on the req.user object */);
+    const { password: _, ...rest } = dbUser;
+    return !dbUser
+      ? done(null, false)
+      : // "rest" is what will be stored on the req.user object
+        done(null, rest);
   } catch (err) {
-    done(err, false);
+    done(err);
   }
 });
 
-passport.use(
-  new Strategy({ usernameField: "email" }, async (email, password, done) => {
-    try {
-      // Check for email & password
-      if (!email || !password) done(new Error("Missing credentials"), null);
-      const sqlStr = sql.getUserByEmail(email);
-      const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
-      const dbUser = rows[0];
-      // If user is not found
-      if (!dbUser) done(new Error("User not found"), null);
-      // Check password hashes
-      const isValid = comparePasswords(password, dbUser.password);
-      if (isValid) done(null, dbUser);
-      else done(new Error("Incorrect credentials"), null);
-    } catch (err) {
-      done(err, null);
-    }
-  })
-);
+// Local strategy
+const strategy = new Strategy(customFields, verifyCallback);
+
+// Passport middleware
+passport.use(strategy);

@@ -24,18 +24,16 @@ function comparePasswords(raw: string, hash: string) {
   return bcrypt.compareSync(raw, hash);
 }
 
-// Checks for user object on request
+// Checks to see if user is authenticated
 const authenticate: RequestHandler = (req, res, next) => {
-  if (req.user) next();
+  if (req.isAuthenticated()) next();
   else res.status(401).send(resErrors(["Not logged in"]));
 };
 
 /**
- * Authenticate sign up POST request
- * Check for email length, if email already exists,
- * password length, passwords match
+ * Authenticate sign up email & password values
  */
-const authenticateSignupRequest = () => [
+const authenticateSignupParams = () => [
   check("email")
     .notEmpty()
     .withMessage("Email cannot be empty")
@@ -66,7 +64,7 @@ const authenticateSignupRequest = () => [
 
 // Returns an error object with an array of error messages
 const resErrors = (errors: string[]) => {
-  return { errors: errors.map((e) => ({ msg: e })) };
+  return { errors: errors.map((e) => ({ message: e })) };
 };
 
 export {
@@ -74,5 +72,5 @@ export {
   hashPassword,
   authenticate,
   comparePasswords,
-  authenticateSignupRequest,
+  authenticateSignupParams,
 };
