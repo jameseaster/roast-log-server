@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRoutes = void 0;
 // Imports
 const database_1 = require("../database");
+const helpers_1 = require("../utils/helpers");
+const sqlStatements_1 = require("../utils/sqlStatements");
 const express_1 = require("express");
 // Constants
 const router = (0, express_1.Router)();
@@ -19,11 +21,11 @@ exports.usersRoutes = router;
 // Routes
 router.get("/emails", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const sqlString = "select email from users;";
+        const sqlString = sqlStatements_1.sql.getAllEmails();
         const result = yield database_1.db.promise().query(sqlString);
         res.status(200).send(result[0]);
     }
     catch (err) {
-        res.status(400).send("Failed to get users");
+        res.status(400).send((0, helpers_1.resErrors)(["Failed to get users"]));
     }
 }));

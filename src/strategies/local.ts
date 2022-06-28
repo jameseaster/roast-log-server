@@ -1,8 +1,9 @@
 // Imports
-import { db } from "../database";
 import passport from "passport";
+import { db } from "../database";
 import { RowDataPacket } from "mysql2";
 import { Strategy } from "passport-local";
+import { sql } from "../utils/sqlStatements";
 import { comparePasswords } from "../utils/helpers";
 
 // Types
@@ -27,7 +28,7 @@ passport.deserializeUser(async (user: IUser, done) => {
   try {
     const { email } = user;
     // Get user by email
-    const sqlStr = `select * from users where email = '${email}';`;
+    const sqlStr = sql.getUserByEmail(email);
     const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
     const dbUser = rows[0];
     if (!dbUser) done(new Error("User not found"), false);
@@ -42,7 +43,7 @@ passport.use(
     try {
       // Check for email & password
       if (!email || !password) done(new Error("Missing credentials"), null);
-      const sqlStr = `select * from users where email = '${email}';`;
+      const sqlStr = sql.getUserByEmail(email);
       const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
       const dbUser = rows[0];
       // If user is not found

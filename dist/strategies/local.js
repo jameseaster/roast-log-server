@@ -13,9 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // Imports
-const database_1 = require("../database");
 const passport_1 = __importDefault(require("passport"));
+const database_1 = require("../database");
 const passport_local_1 = require("passport-local");
+const sqlStatements_1 = require("../utils/sqlStatements");
 const helpers_1 = require("../utils/helpers");
 passport_1.default.serializeUser((req, user, done) => {
     done(null, user);
@@ -24,7 +25,7 @@ passport_1.default.deserializeUser((user, done) => __awaiter(void 0, void 0, voi
     try {
         const { email } = user;
         // Get user by email
-        const sqlStr = `select * from users where email = '${email}';`;
+        const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
         const [rows] = yield database_1.db.promise().query(sqlStr);
         const dbUser = rows[0];
         if (!dbUser)
@@ -40,7 +41,7 @@ passport_1.default.use(new passport_local_1.Strategy({ usernameField: "email" },
         // Check for email & password
         if (!email || !password)
             done(new Error("Missing credentials"), null);
-        const sqlStr = `select * from users where email = '${email}';`;
+        const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
         const [rows] = yield database_1.db.promise().query(sqlStr);
         const dbUser = rows[0];
         // If user is not found
