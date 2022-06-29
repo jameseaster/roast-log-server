@@ -15,6 +15,15 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
   res.status(200).send("Logged in");
 });
 
+// Logged in status
+router.get("/loggedin", (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.status(200).send(req.user);
+  } else {
+    return res.status(401).send("Not logged in");
+  }
+});
+
 // Logout
 router.post("/logout", async (req: any, res) => {
   req.logout((err: any) => {
@@ -38,7 +47,7 @@ router.post(
       const password = hashPassword(req.body.password);
       const sqlString = sql.addUser(email, password);
       await db.promise().query(sqlString);
-      res.status(201).send({ msg: "Created user" });
+      res.status(201).send({ message: "Created user" });
     } catch (err) {
       console.log(err);
       res.status(404).send(resErrors(["Error creating user"]));

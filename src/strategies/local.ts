@@ -5,7 +5,6 @@ import { RowDataPacket } from "mysql2";
 import { Strategy } from "passport-local";
 import { sql } from "../utils/sqlStatements";
 import { comparePasswords } from "../utils/helpers";
-import { Express } from "express";
 
 // Types
 interface IUser {
@@ -32,7 +31,7 @@ const verifyCallback = async (email: string, password: string, done: any) => {
   try {
     // Check for email & password
     if (!email || !password) {
-      return done(null, false, { msg: "Missing credentials" });
+      return done(null, false, { message: "Missing credentials" });
     }
     // Check for exisiting user
     const sqlStr = sql.getUserByEmail(email);
@@ -40,13 +39,13 @@ const verifyCallback = async (email: string, password: string, done: any) => {
     const dbUser = rows[0];
     // If user is not found
     if (!dbUser) {
-      return done(null, false, { msg: "User not found" });
+      return done(null, false, { message: "User not found" });
     }
     // Check password hashes
     const isValid = comparePasswords(password, dbUser.password);
     return isValid
       ? done(null, dbUser)
-      : done(null, false, { msg: "Incorrect credentials" });
+      : done(null, false, { message: "Incorrect credentials" });
   } catch (err) {
     done(err);
   }
@@ -65,10 +64,7 @@ passport.deserializeUser(async (email: string, done) => {
     const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
     const dbUser = rows[0];
     const { password: _, ...rest } = dbUser;
-    return !dbUser
-      ? done(null, false)
-      : // "rest" is what will be stored on the req.user object
-        done(null, rest);
+    return !dbUser ? done(null, false) : done(null, rest);
   } catch (err) {
     done(err);
   }

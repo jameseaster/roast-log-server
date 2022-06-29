@@ -15,7 +15,6 @@ const helpers_1 = require("./utils/helpers");
 const database_1 = require("./database");
 // Routes
 const auth_1 = require("./routes/auth");
-const test_1 = require("./routes/test");
 const users_1 = require("./routes/users");
 const config_1 = __importDefault(require("./utils/config"));
 // Auth strategies
@@ -29,7 +28,10 @@ const connection = promise_1.default.createPool(database_1.options);
 const MySQLStore = require("express-mysql-session")(express_session_1.default);
 const sessionStore = new MySQLStore(database_1.sessionOptions, connection);
 // Middleware
-app.use((0, cors_1.default)({ origin: (_a = process.env.WHITE_LIST_URLS) === null || _a === void 0 ? void 0 : _a.split(" ") }));
+app.use((0, cors_1.default)({
+    credentials: true,
+    origin: (_a = process.env.WHITE_LIST_URLS) === null || _a === void 0 ? void 0 : _a.split(" "),
+}));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, express_session_1.default)({
@@ -47,17 +49,16 @@ app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 // Logging middleware
 app.use((req, res, next) => {
-    console.log(`${req.method}: ${req.url}`);
-    console.log("[express-session]: ", req.session);
-    console.log("[PASSPORT]: ", req.user);
+    // console.log(`${req.method}: ${req.url}`);
+    // console.log("[express-session]: ", req.session);
+    // console.log("IS AUTH", req.isAuthenticated());
     next();
 });
 // Routes
-app.use("/auth", auth_1.authRoutes);
-app.use("/test", test_1.testRoutes);
+app.use("/API/auth", auth_1.authRoutes);
 // Protected Routes
 app.use(helpers_1.authenticate);
-app.use("/users", users_1.usersRoutes);
+app.use("/API/users", users_1.usersRoutes);
 app.listen(port, () => {
     console.log(`🚀 Server running at https://localhost:${port}`);
 });

@@ -39,7 +39,7 @@ const verifyCallback = (email, password, done) => __awaiter(void 0, void 0, void
     try {
         // Check for email & password
         if (!email || !password) {
-            return done(null, false, { msg: "Missing credentials" });
+            return done(null, false, { message: "Missing credentials" });
         }
         // Check for exisiting user
         const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
@@ -47,13 +47,13 @@ const verifyCallback = (email, password, done) => __awaiter(void 0, void 0, void
         const dbUser = rows[0];
         // If user is not found
         if (!dbUser) {
-            return done(null, false, { msg: "User not found" });
+            return done(null, false, { message: "User not found" });
         }
         // Check password hashes
         const isValid = (0, helpers_1.comparePasswords)(password, dbUser.password);
         return isValid
             ? done(null, dbUser)
-            : done(null, false, { msg: "Incorrect credentials" });
+            : done(null, false, { message: "Incorrect credentials" });
     }
     catch (err) {
         done(err);
@@ -71,10 +71,7 @@ passport_1.default.deserializeUser((email, done) => __awaiter(void 0, void 0, vo
         const [rows] = yield database_1.db.promise().query(sqlStr);
         const dbUser = rows[0];
         const { password: _ } = dbUser, rest = __rest(dbUser, ["password"]);
-        return !dbUser
-            ? done(null, false)
-            : // "rest" is what will be stored on the req.user object
-                done(null, rest);
+        return !dbUser ? done(null, false) : done(null, rest);
     }
     catch (err) {
         done(err);

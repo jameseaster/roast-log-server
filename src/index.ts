@@ -10,7 +10,6 @@ import { options, sessionOptions } from "./database";
 
 // Routes
 import { authRoutes } from "./routes/auth";
-import { testRoutes } from "./routes/test";
 import { usersRoutes } from "./routes/users";
 import config from "./utils/config";
 
@@ -28,7 +27,12 @@ const MySQLStore = require("express-mysql-session")(session);
 const sessionStore = new MySQLStore(sessionOptions, connection);
 
 // Middleware
-app.use(cors({ origin: process.env.WHITE_LIST_URLS?.split(" ") }));
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.WHITE_LIST_URLS?.split(" "),
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
@@ -49,19 +53,18 @@ app.use(passport.session());
 
 // Logging middleware
 app.use((req, res, next) => {
-  console.log(`${req.method}: ${req.url}`);
-  console.log("[express-session]: ", req.session);
-  console.log("[PASSPORT]: ", req.user);
+  // console.log(`${req.method}: ${req.url}`);
+  // console.log("[express-session]: ", req.session);
+  // console.log("IS AUTH", req.isAuthenticated());
   next();
 });
 
 // Routes
-app.use("/auth", authRoutes);
-app.use("/test", testRoutes);
+app.use("/API/auth", authRoutes);
 
 // Protected Routes
 app.use(authenticate);
-app.use("/users", usersRoutes);
+app.use("/API/users", usersRoutes);
 
 app.listen(port, () => {
   console.log(`🚀 Server running at https://localhost:${port}`);
