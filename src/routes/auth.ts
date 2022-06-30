@@ -10,32 +10,32 @@ import { authenticateSignupParams } from "../utils/helpers";
 // Constants
 const router = Router();
 
-// Login
-router.post("/login", passport.authenticate("local"), (req, res) => {
-  res.status(200).send("Logged in");
+// Sign In
+router.post("/signin", passport.authenticate("local"), (req, res) => {
+  res.status(200).send("Signed in");
 });
 
-// Logged in status
-router.get("/loggedin", (req, res) => {
+// Authenticated status
+router.get("/authenticated", (req, res) => {
   if (req.isAuthenticated()) {
     return res.status(200).send(req.user);
   } else {
-    return res.status(401).send("Not logged in");
+    return res.status(401).send("Not authenticated");
   }
 });
 
-// Logout
-router.post("/logout", async (req: any, res) => {
+// Sign Out
+router.post("/signout", async (req: any, res) => {
   req.logout((err: any) => {
     return err
-      ? res.status(400).send(`Failed to logout: ${err}`)
-      : res.status(200).send("Successfully logged out");
+      ? res.status(400).send(`Failed to sign out: ${err}`)
+      : res.status(200).send("Successfully signed out");
   });
 });
 
-// Sign up with validated email & password
+// Register account with validated email & password
 router.post(
-  "/signup",
+  "/register",
   authenticateSignupParams(),
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
@@ -47,10 +47,10 @@ router.post(
       const password = hashPassword(req.body.password);
       const sqlString = sql.addUser(email, password);
       await db.promise().query(sqlString);
-      res.status(201).send({ message: "Created user" });
+      res.status(201).send({ message: "Registered user" });
     } catch (err) {
       console.log(err);
-      res.status(404).send(resErrors(["Error creating user"]));
+      res.status(404).send(resErrors(["Error registering user"]));
     }
   }
 );

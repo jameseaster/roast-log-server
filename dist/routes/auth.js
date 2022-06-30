@@ -24,29 +24,29 @@ const helpers_2 = require("../utils/helpers");
 // Constants
 const router = (0, express_1.Router)();
 exports.authRoutes = router;
-// Login
-router.post("/login", passport_1.default.authenticate("local"), (req, res) => {
-    res.status(200).send("Logged in");
+// Sign In
+router.post("/signin", passport_1.default.authenticate("local"), (req, res) => {
+    res.status(200).send("Signed in");
 });
-// Logged in status
-router.get("/loggedin", (req, res) => {
+// Authenticated status
+router.get("/authenticated", (req, res) => {
     if (req.isAuthenticated()) {
         return res.status(200).send(req.user);
     }
     else {
-        return res.status(401).send("Not logged in");
+        return res.status(401).send("Not authenticated");
     }
 });
-// Logout
-router.post("/logout", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Sign Out
+router.post("/signout", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     req.logout((err) => {
         return err
-            ? res.status(400).send(`Failed to logout: ${err}`)
-            : res.status(200).send("Successfully logged out");
+            ? res.status(400).send(`Failed to sign out: ${err}`)
+            : res.status(200).send("Successfully signed out");
     });
 }));
-// Sign up with validated email & password
-router.post("/signup", (0, helpers_2.authenticateSignupParams)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Register account with validated email & password
+router.post("/register", (0, helpers_2.authenticateSignupParams)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         return res.status(404).json({ errors: errors.array() });
@@ -56,10 +56,10 @@ router.post("/signup", (0, helpers_2.authenticateSignupParams)(), (req, res) => 
         const password = (0, helpers_1.hashPassword)(req.body.password);
         const sqlString = sqlStatements_1.sql.addUser(email, password);
         yield index_1.db.promise().query(sqlString);
-        res.status(201).send({ message: "Created user" });
+        res.status(201).send({ message: "Registered user" });
     }
     catch (err) {
         console.log(err);
-        res.status(404).send((0, helpers_1.resErrors)(["Error creating user"]));
+        res.status(404).send((0, helpers_1.resErrors)(["Error registering user"]));
     }
 }));
