@@ -26,11 +26,8 @@ const connection = mysql.createConnection(options);
 // Log connection status
 connection.connect((err) =>
   err
-    ? console.log(
-        `📦 ERROR connecting db -> MySql: ${process.env.DB_NAME}`,
-        err
-      )
-    : console.log(`📦 Database connected -> MySql: ${process.env.DB_NAME}`)
+    ? console.log(`📦 ERROR connecting MySql: ${process.env.DB_NAME}`, err)
+    : console.log(`📦 Connected to MySql: ${process.env.DB_NAME}`)
 );
 
 export { connection as db };
