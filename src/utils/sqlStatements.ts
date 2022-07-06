@@ -17,9 +17,9 @@ interface ICreateRoast {
 const sqlStatements = {
   addUser: (e: string, p: string) =>
     `insert into users(email, password) values('${e}', '${p}');`,
-  getAllRoasts: () => "select * from roasts;",
+  getAllRoasts: () => "select * from roasts order by roast_number desc;",
   getRoastsByUserEmail: (e: string) =>
-    `select * from roasts where user_email = '${e}';`,
+    `select * from roasts where user_email = '${e}' order by roast_number desc;`,
   getAllEmails: () => "select email from users;",
   getAllUsers: () => "select * from users;",
   getUserByEmail: (e: string) => `select * from users where email = '${e}';`,

@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sql = void 0;
 const sqlStatements = {
     addUser: (e, p) => `insert into users(email, password) values('${e}', '${p}');`,
-    getAllRoasts: () => "select * from roasts;",
-    getRoastsByUserEmail: (e) => `select * from roasts where user_email = '${e}';`,
+    getAllRoasts: () => "select * from roasts order by roast_number desc;",
+    getRoastsByUserEmail: (e) => `select * from roasts where user_email = '${e}' order by roast_number desc;`,
     getAllEmails: () => "select email from users;",
     getAllUsers: () => "select * from users;",
     getUserByEmail: (e) => `select * from users where email = '${e}';`,
