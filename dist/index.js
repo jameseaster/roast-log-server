@@ -14,9 +14,10 @@ const express_1 = __importDefault(require("express"));
 const helpers_1 = require("./utils/helpers");
 const database_1 = require("./database");
 // Routes
+const config_1 = __importDefault(require("./utils/config"));
 const auth_1 = require("./routes/auth");
 const users_1 = require("./routes/users");
-const config_1 = __importDefault(require("./utils/config"));
+const roasts_1 = require("./routes/roasts");
 // Auth strategies
 require("./strategies/local");
 // Constants
@@ -59,6 +60,7 @@ app.use("/API/auth", auth_1.authRoutes);
 // Protected Routes
 app.use(helpers_1.authenticate);
 app.use("/API/users", users_1.usersRoutes);
+app.use("/API/roasts", roasts_1.roastRoutes);
 app.listen(port, () => {
     console.log(`🚀 Server running at https://localhost:${port}`);
 });

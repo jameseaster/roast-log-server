@@ -9,9 +9,10 @@ import { authenticate } from "./utils/helpers";
 import { options, sessionOptions } from "./database";
 
 // Routes
+import config from "./utils/config";
 import { authRoutes } from "./routes/auth";
 import { usersRoutes } from "./routes/users";
-import config from "./utils/config";
+import { roastRoutes } from "./routes/roasts";
 
 // Auth strategies
 require("./strategies/local");
@@ -65,6 +66,7 @@ app.use("/API/auth", authRoutes);
 // Protected Routes
 app.use(authenticate);
 app.use("/API/users", usersRoutes);
+app.use("/API/roasts", roastRoutes);
 
 app.listen(port, () => {
   console.log(`🚀 Server running at https://localhost:${port}`);

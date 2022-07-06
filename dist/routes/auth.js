@@ -17,10 +17,9 @@ exports.authRoutes = void 0;
 const passport_1 = __importDefault(require("passport"));
 const index_1 = require("../database/index");
 const sqlStatements_1 = require("../utils/sqlStatements");
-const helpers_1 = require("../utils/helpers");
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const helpers_2 = require("../utils/helpers");
+const helpers_1 = require("../utils/helpers");
 // Constants
 const router = (0, express_1.Router)();
 exports.authRoutes = router;
@@ -30,12 +29,9 @@ router.post("/signin", passport_1.default.authenticate("local"), (req, res) => {
 });
 // Authenticated status
 router.get("/authenticated", (req, res) => {
-    if (req.isAuthenticated()) {
-        return res.status(200).send(req.user);
-    }
-    else {
-        return res.status(401).send("Not authenticated");
-    }
+    return req.isAuthenticated()
+        ? res.status(200).send(req.user)
+        : res.status(401).send("Not authenticated");
 });
 // Sign Out
 router.post("/signout", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -46,11 +42,10 @@ router.post("/signout", (req, res) => __awaiter(void 0, void 0, void 0, function
     });
 }));
 // Register account with validated email & password
-router.post("/register", (0, helpers_2.authenticateSignupParams)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        return res.status(404).json({ errors: errors.array() });
-    }
+router.post("/register", (0, helpers_1.validateSignup)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const e = (0, express_validator_1.validationResult)(req);
+    if (!e.isEmpty())
+        return res.status(404).json({ errors: e.array() });
     try {
         const { email } = req.body;
         const password = (0, helpers_1.hashPassword)(req.body.password);

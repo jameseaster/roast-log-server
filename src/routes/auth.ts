@@ -2,10 +2,9 @@
 import passport from "passport";
 import { db } from "../database/index";
 import { sql } from "../utils/sqlStatements";
-import { hashPassword, resErrors } from "../utils/helpers";
 import { Router, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { authenticateSignupParams } from "../utils/helpers";
+import { hashPassword, resErrors, validateSignup } from "../utils/helpers";
 
 // Constants
 const router = Router();
@@ -17,11 +16,9 @@ router.post("/signin", passport.authenticate("local"), (req, res) => {
 
 // Authenticated status
 router.get("/authenticated", (req, res) => {
-  if (req.isAuthenticated()) {
-    return res.status(200).send(req.user);
-  } else {
-    return res.status(401).send("Not authenticated");
-  }
+  return req.isAuthenticated()
+    ? res.status(200).send(req.user)
+    : res.status(401).send("Not authenticated");
 });
 
 // Sign Out
@@ -36,12 +33,10 @@ router.post("/signout", async (req: any, res) => {
 // Register account with validated email & password
 router.post(
   "/register",
-  authenticateSignupParams(),
+  validateSignup(),
   async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(404).json({ errors: errors.array() });
-    }
+    const e = validationResult(req);
+    if (!e.isEmpty()) return res.status(404).json({ errors: e.array() });
     try {
       const { email } = req.body;
       const password = hashPassword(req.body.password);

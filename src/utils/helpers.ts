@@ -31,9 +31,9 @@ const authenticate: RequestHandler = (req, res, next) => {
 };
 
 /**
- * Authenticate sign up email & password values
+ * Validate sign up email & password values
  */
-const authenticateSignupParams = () => [
+const validateSignup = () => [
   check("email")
     .notEmpty()
     .withMessage("Email cannot be empty")
@@ -62,6 +62,50 @@ const authenticateSignupParams = () => [
     }),
 ];
 
+/**
+ * Validate create roast values
+ */
+const validateCreateRoast = () => [
+  check("roast_number")
+    .notEmpty()
+    .withMessage("roast_number cannot be empty")
+    .custom(async (value, { req }) => {
+      const { roast_number } = req.body;
+      const sqlStr = `select * from roasts where user_email = '${req.user.email}' and roast_number = ${roast_number};`;
+      const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
+      const prevRoast = rows[0];
+      if (prevRoast) throw new Error("Roast number already recorded");
+      else return value;
+    }),
+  check("coffee_origin")
+    .notEmpty()
+    .withMessage("Coffee Origin cannot be empty"),
+  check("date").notEmpty().withMessage("Date cannot be empty"),
+  check("time").notEmpty().withMessage("Time cannot be empty"),
+  check("green_weight").notEmpty().withMessage("Green Weight cannot be empty"),
+  check("roasted_weight")
+    .notEmpty()
+    .withMessage("Roasted Weight cannot be empty"),
+  check("percentage_loss")
+    .notEmpty()
+    .withMessage("Percentage Loss cannot be empty"),
+  check("first_crack").notEmpty().withMessage("First Crack cannot be empty"),
+  check("cool_down").notEmpty().withMessage("Cool Down cannot be empty"),
+  check("vac_to_250").notEmpty().withMessage("Vac to 250 cannot be empty"),
+];
+
+/**
+ * Validate roast_number value
+ */
+const validateRoastNumber = () =>
+  check("roast_number").notEmpty().withMessage("Roast Number cannot be empty");
+
+/**
+ * Validate roast id value
+ */
+const validateRoastId = () =>
+  check("id").notEmpty().withMessage("ID cannot be empty");
+
 // Returns an error object with an array of error messages
 const resErrors = (errors: string[]) => {
   return { errors: errors.map((e) => ({ message: e })) };
@@ -71,6 +115,9 @@ export {
   resErrors,
   hashPassword,
   authenticate,
+  validateSignup,
+  validateRoastId,
   comparePasswords,
-  authenticateSignupParams,
+  validateRoastNumber,
+  validateCreateRoast,
 };

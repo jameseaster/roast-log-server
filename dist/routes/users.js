@@ -18,7 +18,19 @@ const express_1 = require("express");
 // Constants
 const router = (0, express_1.Router)();
 exports.usersRoutes = router;
-// Routes
+// All users
+router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const sqlString = sqlStatements_1.sql.getAllUsers();
+        const result = yield database_1.db.promise().query(sqlString);
+        res.status(200).send(result[0]);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(400).send((0, helpers_1.resErrors)(["Failed to get all users"]));
+    }
+}));
+// All user emails
 router.get("/emails", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sqlString = sqlStatements_1.sql.getAllEmails();
@@ -26,6 +38,7 @@ router.get("/emails", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(200).send(result[0]);
     }
     catch (err) {
-        res.status(400).send((0, helpers_1.resErrors)(["Failed to get users"]));
+        console.log(err);
+        res.status(400).send((0, helpers_1.resErrors)(["Failed to get user emails"]));
     }
 }));
