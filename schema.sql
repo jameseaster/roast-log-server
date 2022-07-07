@@ -25,7 +25,6 @@ CREATE TABLE `roasts` (
   `time` time NOT NULL,
   `green_weight` int NOT NULL,
   `roasted_weight` int NOT NULL,
-  `percentage_loss` decimal(3,1) NOT NULL,
   `first_crack` decimal(3,1) NOT NULL,
   `cool_down` decimal(3,1) NOT NULL,
   `vac_to_250` tinyint(1) NOT NULL,
@@ -33,7 +32,7 @@ CREATE TABLE `roasts` (
 );
 
 -- DUMMY ROAST DATA
-INSERT INTO roasts (roast_number, user_email, country, region, process,  date,  time,  green_weight,  roasted_weight,  percentage_loss,  first_crack,  cool_down,  vac_to_250) 
-  VALUES (366, 'user@roast.com', 'Ethiopia', 'Dari Kidame', 'Dry', '2022-03-27', '14:45:00', 250, 219, 12.4, 17.7, 16.7, 1);
-INSERT INTO roasts (roast_number, user_email, country, region, process, date, time, green_weight, roasted_weight, percentage_loss, first_crack, cool_down, vac_to_250) 
-  VALUES (367, 'user@roast.com', 'Ethiopia', 'Dari Kidame', 'Dry', '2022-03-27', '15:10:00', 250, 218, 12.8, 18.9, 17.9, 1)
+INSERT INTO roasts (roast_number, user_email, country, region, process, date, time, green_weight, roasted_weight, first_crack, cool_down, vac_to_250) 
+  VALUES (366, 'user@roast.com', 'Ethiopia', 'Dari Kidame', 'Dry', '2022-03-27', '14:45:00', 250, 219, 17.7, 16.7, 1);
+INSERT INTO roasts (roast_number, user_email, country, region, process, date, time, green_weight, roasted_weight, first_crack, cool_down, vac_to_250) 
+  VALUES (367, 'user@roast.com', 'Ethiopia', 'Dari Kidame', 'Dry', '2022-03-27', '15:10:00', 250, 218, 18.9, 17.9, 1)
