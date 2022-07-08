@@ -89,18 +89,15 @@ const validateCreateRoast = () => [
         else
             return value;
     })),
-    (0, express_validator_1.check)("coffee_origin")
-        .notEmpty()
-        .withMessage("Coffee Origin cannot be empty"),
+    (0, express_validator_1.check)("country").notEmpty().withMessage("Country cannot be empty"),
+    (0, express_validator_1.check)("region").notEmpty().withMessage("Region cannot be empty"),
+    (0, express_validator_1.check)("process").notEmpty().withMessage("Process cannot be empty"),
     (0, express_validator_1.check)("date").notEmpty().withMessage("Date cannot be empty"),
     (0, express_validator_1.check)("time").notEmpty().withMessage("Time cannot be empty"),
     (0, express_validator_1.check)("green_weight").notEmpty().withMessage("Green Weight cannot be empty"),
     (0, express_validator_1.check)("roasted_weight")
         .notEmpty()
         .withMessage("Roasted Weight cannot be empty"),
-    (0, express_validator_1.check)("percentage_loss")
-        .notEmpty()
-        .withMessage("Percentage Loss cannot be empty"),
     (0, express_validator_1.check)("first_crack").notEmpty().withMessage("First Crack cannot be empty"),
     (0, express_validator_1.check)("cool_down").notEmpty().withMessage("Cool Down cannot be empty"),
     (0, express_validator_1.check)("vac_to_250").notEmpty().withMessage("Vac to 250 cannot be empty"),

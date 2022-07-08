@@ -77,18 +77,15 @@ const validateCreateRoast = () => [
       if (prevRoast) throw new Error("Roast number already recorded");
       else return value;
     }),
-  check("coffee_origin")
-    .notEmpty()
-    .withMessage("Coffee Origin cannot be empty"),
+  check("country").notEmpty().withMessage("Country cannot be empty"),
+  check("region").notEmpty().withMessage("Region cannot be empty"),
+  check("process").notEmpty().withMessage("Process cannot be empty"),
   check("date").notEmpty().withMessage("Date cannot be empty"),
   check("time").notEmpty().withMessage("Time cannot be empty"),
   check("green_weight").notEmpty().withMessage("Green Weight cannot be empty"),
   check("roasted_weight")
     .notEmpty()
     .withMessage("Roasted Weight cannot be empty"),
-  check("percentage_loss")
-    .notEmpty()
-    .withMessage("Percentage Loss cannot be empty"),
   check("first_crack").notEmpty().withMessage("First Crack cannot be empty"),
   check("cool_down").notEmpty().withMessage("Cool Down cannot be empty"),
   check("vac_to_250").notEmpty().withMessage("Vac to 250 cannot be empty"),

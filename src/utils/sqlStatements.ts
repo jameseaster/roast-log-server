@@ -3,12 +3,13 @@
 interface ICreateRoast {
   user_email: string;
   roast_number: number;
-  coffee_origin: string;
+  country: string;
+  region: string;
+  process: string;
   date: string;
   time: string;
   green_weight: number;
   roasted_weight: number;
-  percentage_loss: number;
   first_crack: number;
   cool_down: number;
   vac_to_250: number;
@@ -25,7 +26,7 @@ const sqlStatements = {
   getUserByEmail: (e: string) => `select * from users where email = '${e}';`,
   getSessionInfo: () => `select * from sessions`,
   createRoast: (params: ICreateRoast) =>
-    `insert into roasts (roast_number, user_email, coffee_origin, date, time, green_weight, roasted_weight, percentage_loss, first_crack, cool_down, vac_to_250) values(${params.roast_number}, '${params.user_email}', '${params.coffee_origin}', '${params.date}', '${params.time}', ${params.green_weight}, ${params.roasted_weight}, ${params.percentage_loss}, ${params.first_crack}, ${params.cool_down}, ${params.vac_to_250})`,
+    `insert into roasts (roast_number, user_email, country, region, process, date, time, green_weight, roasted_weight, first_crack, cool_down, vac_to_250) values(${params.roast_number}, '${params.user_email}', '${params.country}', '${params.region}', '${params.process}', '${params.date}', '${params.time}', ${params.green_weight}, ${params.roasted_weight}, ${params.first_crack}, ${params.cool_down}, ${params.vac_to_250})`,
   update: (
     table: string,
     whereStr: string,
