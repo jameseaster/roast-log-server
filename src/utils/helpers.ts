@@ -66,17 +66,6 @@ const validateSignup = () => [
  * Validate create roast values
  */
 const validateCreateRoast = () => [
-  check("roast_number")
-    .notEmpty()
-    .withMessage("roast_number cannot be empty")
-    .custom(async (value, { req }) => {
-      const { roast_number } = req.body;
-      const sqlStr = `select * from roasts where user_email = '${req.user.email}' and roast_number = ${roast_number};`;
-      const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
-      const prevRoast = rows[0];
-      if (prevRoast) throw new Error("Roast number already recorded");
-      else return value;
-    }),
   check("country").notEmpty().withMessage("Country cannot be empty"),
   check("region").notEmpty().withMessage("Region cannot be empty"),
   check("process").notEmpty().withMessage("Process cannot be empty"),
@@ -90,12 +79,6 @@ const validateCreateRoast = () => [
   check("cool_down").notEmpty().withMessage("Cool Down cannot be empty"),
   check("vac_to_250").notEmpty().withMessage("Vac to 250 cannot be empty"),
 ];
-
-/**
- * Validate roast_number value
- */
-const validateRoastNumber = () =>
-  check("roast_number").notEmpty().withMessage("Roast Number cannot be empty");
 
 /**
  * Validate roast id value
@@ -115,6 +98,5 @@ export {
   validateSignup,
   validateRoastId,
   comparePasswords,
-  validateRoastNumber,
   validateCreateRoast,
 };

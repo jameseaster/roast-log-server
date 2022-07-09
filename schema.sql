@@ -1,6 +1,6 @@
 /**
- * Execute sql file: $ mysql -u root -p < schema.sql
- * Then restart the server
+ * Execute sql file & RESTART THE SERVER: 
+ * $ mysql -u root -p < schema.sql
  */
 DROP DATABASE IF EXISTS roast_db;
 CREATE DATABASE roast_db;
@@ -17,7 +17,6 @@ CREATE TABLE `users` (
 CREATE TABLE `roasts` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_email` varchar(90) NOT NULL,
-  `roast_number` int NOT NULL,
   `country` varchar(90) NOT NULL,
   `region` varchar(90) NOT NULL,
   `process` varchar(90) NOT NULL,
@@ -32,7 +31,7 @@ CREATE TABLE `roasts` (
 );
 
 -- DUMMY ROAST DATA
-INSERT INTO roasts (roast_number, user_email, country, region, process, date, time, green_weight, roasted_weight, first_crack, cool_down, vac_to_250) 
-  VALUES (366, 'user@roast.com', 'Ethiopia', 'Dari Kidame', 'Dry', '2022-03-27', '14:45:00', 250, 219, 17.7, 16.7, 1);
-INSERT INTO roasts (roast_number, user_email, country, region, process, date, time, green_weight, roasted_weight, first_crack, cool_down, vac_to_250) 
-  VALUES (367, 'user@roast.com', 'Ethiopia', 'Dari Kidame', 'Dry', '2022-03-27', '15:10:00', 250, 218, 18.9, 17.9, 1)
+INSERT INTO roasts (user_email, country, region, process, date, time, green_weight, roasted_weight, first_crack, cool_down, vac_to_250) 
+  VALUES ('user@roast.com', 'Ethiopia', 'Dari Kidame', 'Dry', '2022-03-27', '14:45:00', 250, 219, 17.7, 16.7, 1);
+INSERT INTO roasts (user_email, country, region, process, date, time, green_weight, roasted_weight, first_crack, cool_down, vac_to_250) 
+  VALUES ('user@roast.com', 'Ethiopia', 'Dari Kidame', 'Dry', '2022-03-27', '15:10:00', 250, 218, 18.9, 17.9, 1)

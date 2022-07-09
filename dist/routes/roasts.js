@@ -67,13 +67,13 @@ router.post("/", (0, helpers_1.validateCreateRoast)(), (req, res) => __awaiter(v
         res.status(400).send((0, helpers_1.resErrors)(["Failed to create roast"]));
     }
 }));
-// Update existing roast by roast_number & user email
+// Update existing roast by id & user email
 router.patch("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const e = (0, express_validator_1.validationResult)(req);
     if (!e.isEmpty())
         return res.status(404).json({ errors: e.array() });
     try {
-        // Get roast that matches user & roast_number
+        // Get roast that matches user & roast id
         const _a = req.body, { id } = _a, rest = __rest(_a, ["id"]);
         const whereStr = ` where user_email = '${req.user.email}' and id = ${id}`;
         const sqlStr = "select * from roasts " + whereStr;
@@ -97,14 +97,13 @@ router.patch("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void
         res.status(400).send((0, helpers_1.resErrors)(["Failed to update roast"]));
     }
 }));
-// Delete roast by roast_number & user email
-router.delete("/", (0, helpers_1.validateRoastNumber)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Delete roast by id & user email
+router.delete("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const e = (0, express_validator_1.validationResult)(req);
     if (!e.isEmpty())
         return res.status(404).json({ errors: e.array() });
     try {
-        const { roast_number } = req.body;
-        const whereStr = ` where user_email = '${req.user.email}' and roast_number = ${req.body.roast_number}`;
+        const whereStr = ` where user_email = '${req.user.email}' and id = ${req.body.id}`;
         const deleteSqlStr = "delete from roasts" + whereStr;
         yield database_1.db.promise().query(deleteSqlStr);
         res.status(200).send("Successfully deleted roast");

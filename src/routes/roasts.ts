@@ -7,7 +7,6 @@ import { validationResult } from "express-validator";
 import {
   resErrors,
   validateRoastId,
-  validateRoastNumber,
   validateCreateRoast,
 } from "../utils/helpers";
 
@@ -57,12 +56,12 @@ router.post("/", validateCreateRoast(), async (req: Request, res: Response) => {
   }
 });
 
-// Update existing roast by roast_number & user email
+// Update existing roast by id & user email
 router.patch("/", validateRoastId(), async (req: Request, res: Response) => {
   const e = validationResult(req);
   if (!e.isEmpty()) return res.status(404).json({ errors: e.array() });
   try {
-    // Get roast that matches user & roast_number
+    // Get roast that matches user & roast id
     const { id, ...rest } = req.body;
     const whereStr = ` where user_email = '${req.user.email}' and id = ${id}`;
     const sqlStr = "select * from roasts " + whereStr;
@@ -84,24 +83,19 @@ router.patch("/", validateRoastId(), async (req: Request, res: Response) => {
   }
 });
 
-// Delete roast by roast_number & user email
-router.delete(
-  "/",
-  validateRoastNumber(),
-  async (req: Request, res: Response) => {
-    const e = validationResult(req);
-    if (!e.isEmpty()) return res.status(404).json({ errors: e.array() });
-    try {
-      const { roast_number } = req.body;
-      const whereStr = ` where user_email = '${req.user.email}' and roast_number = ${req.body.roast_number}`;
-      const deleteSqlStr = "delete from roasts" + whereStr;
-      await db.promise().query<IResponseUser[]>(deleteSqlStr);
-      res.status(200).send("Successfully deleted roast");
-    } catch (err) {
-      res.status(400).send(resErrors(["Failed to delete roast"]));
-    }
+// Delete roast by id & user email
+router.delete("/", validateRoastId(), async (req: Request, res: Response) => {
+  const e = validationResult(req);
+  if (!e.isEmpty()) return res.status(404).json({ errors: e.array() });
+  try {
+    const whereStr = ` where user_email = '${req.user.email}' and id = ${req.body.id}`;
+    const deleteSqlStr = "delete from roasts" + whereStr;
+    await db.promise().query<IResponseUser[]>(deleteSqlStr);
+    res.status(200).send("Successfully deleted roast");
+  } catch (err) {
+    res.status(400).send(resErrors(["Failed to delete roast"]));
   }
-);
+});
 
 // Delete roast by roast id
 router.delete(
