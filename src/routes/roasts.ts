@@ -58,35 +58,31 @@ router.post("/", validateCreateRoast(), async (req: Request, res: Response) => {
 });
 
 // Update existing roast by roast_number & user email
-router.patch(
-  "/",
-  validateRoastNumber(),
-  async (req: Request, res: Response) => {
-    const e = validationResult(req);
-    if (!e.isEmpty()) return res.status(404).json({ errors: e.array() });
-    try {
-      // Get roast that matches user & roast_number
-      const { roast_number, ...rest } = req.body;
-      const whereStr = ` where user_email = '${req.user.email}' and roast_number = ${req.body.roast_number}`;
-      const sqlStr = "select * from roasts " + whereStr;
-      let [result] = await db.promise().query<IResponseUser[]>(sqlStr);
-      const roast = result[0];
-      if (!roast) throw new Error("No roast exists");
-      // Extract updated values that exist on roast object
-      const updatedValues: any = {};
-      Object.keys(rest).forEach((key) => {
-        if (roast[key] !== undefined) updatedValues[key] = req.body[key];
-      });
-      // Update row
-      const updateStr = sql.update("roasts", whereStr, updatedValues);
-      await db.promise().query<IResponseUser[]>(updateStr);
-      res.status(200).send("Successfully updated");
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(resErrors(["Failed to update roast"]));
-    }
+router.patch("/", validateRoastId(), async (req: Request, res: Response) => {
+  const e = validationResult(req);
+  if (!e.isEmpty()) return res.status(404).json({ errors: e.array() });
+  try {
+    // Get roast that matches user & roast_number
+    const { id, ...rest } = req.body;
+    const whereStr = ` where user_email = '${req.user.email}' and id = ${id}`;
+    const sqlStr = "select * from roasts " + whereStr;
+    let [result] = await db.promise().query<IResponseUser[]>(sqlStr);
+    const roast = result[0];
+    if (!roast) throw new Error("No roast exists");
+    // Extract updated values that exist on roast object
+    const updatedValues: any = {};
+    Object.keys(rest).forEach((key) => {
+      if (roast[key] !== undefined) updatedValues[key] = req.body[key];
+    });
+    // Update row
+    const updateStr = sql.update("roasts", whereStr, updatedValues);
+    await db.promise().query<IResponseUser[]>(updateStr);
+    res.status(200).send("Successfully updated");
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(resErrors(["Failed to update roast"]));
   }
-);
+});
 
 // Delete roast by roast_number & user email
 router.delete(

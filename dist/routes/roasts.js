@@ -68,14 +68,14 @@ router.post("/", (0, helpers_1.validateCreateRoast)(), (req, res) => __awaiter(v
     }
 }));
 // Update existing roast by roast_number & user email
-router.patch("/", (0, helpers_1.validateRoastNumber)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.patch("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const e = (0, express_validator_1.validationResult)(req);
     if (!e.isEmpty())
         return res.status(404).json({ errors: e.array() });
     try {
         // Get roast that matches user & roast_number
-        const _a = req.body, { roast_number } = _a, rest = __rest(_a, ["roast_number"]);
-        const whereStr = ` where user_email = '${req.user.email}' and roast_number = ${req.body.roast_number}`;
+        const _a = req.body, { id } = _a, rest = __rest(_a, ["id"]);
+        const whereStr = ` where user_email = '${req.user.email}' and id = ${id}`;
         const sqlStr = "select * from roasts " + whereStr;
         let [result] = yield database_1.db.promise().query(sqlStr);
         const roast = result[0];
