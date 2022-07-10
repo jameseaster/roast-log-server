@@ -1,7 +1,5 @@
 // Imports
-import { db } from "@db/index";
 import passport from "passport";
-import { IResponseUser } from "src/types";
 import { Strategy } from "passport-local";
 import { constants } from "@utils/constants";
 import { selectAll } from "@utils/sqlStatements";
@@ -22,8 +20,7 @@ const verifyCallback = async (email: string, password: string, done: any) => {
     }
     // Check for exisiting user
     const args = { table: constants.userTable, where: { email } };
-    const userByEmail = selectAll(args);
-    const [rows] = await db.promise().query<IResponseUser[]>(userByEmail);
+    const [rows] = await selectAll(args);
     const dbUser = rows[0];
     // If user is not found
     if (!dbUser) {
@@ -49,8 +46,7 @@ passport.deserializeUser(async (email: string, done) => {
   try {
     // Get user by email
     const args = { table: constants.userTable, where: { email } };
-    const userByEmail = selectAll(args);
-    const [rows] = await db.promise().query<IResponseUser[]>(userByEmail);
+    const [rows] = await selectAll(args);
     const dbUser = rows[0];
     const { password: _, ...rest } = dbUser;
     return !dbUser ? done(null, false) : done(null, rest);

@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRoutes = void 0;
 // Imports
 const passport_1 = __importDefault(require("passport"));
-const index_1 = require("@db/index");
 const constants_1 = require("@utils/constants");
 const sqlStatements_1 = require("@utils/sqlStatements");
 const express_1 = require("express");
@@ -51,8 +50,7 @@ router.post("/register", (0, helpers_1.validateSignup)(), (req, res) => __awaite
         const { email } = req.body;
         const password = (0, helpers_1.hashPassword)(req.body.password);
         const args = { table: constants_1.constants.userTable, values: { email, password } };
-        const newUserRow = (0, sqlStatements_1.newRow)(args);
-        yield (0, index_1.dbQuery)(newUserRow);
+        yield (0, sqlStatements_1.newRow)(args);
         res.status(201).send({ message: "Registered user" });
     }
     catch (err) {

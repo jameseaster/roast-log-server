@@ -2,7 +2,7 @@
 require("dotenv").config();
 import mysql from "mysql2";
 import config from "@utils/config";
-import { IResponseUser } from "src/types";
+import { IResponseUser } from "@utils/types";
 
 // DB Options
 export const options = {

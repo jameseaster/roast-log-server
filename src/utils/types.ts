@@ -1,11 +1,15 @@
-import { RowDataPacket } from "mysql2";
+import { FieldPacket, RowDataPacket } from "mysql2";
 
+// Types
+export type TableName = "users" | "roasts";
+
+export type SqlReturn = Promise<[IResponseUser[], FieldPacket[]]>;
+
+// Interfaces
 export interface IConstants {
   userTable: TableName;
   roastTable: TableName;
 }
-
-export type TableName = "users" | "roasts";
 
 export interface IResponseUser extends RowDataPacket {
   id: number;

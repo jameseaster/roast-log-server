@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRoutes = void 0;
 // Imports
-const index_1 = require("@db/index");
 const helpers_1 = require("@utils/helpers");
 const constants_1 = require("@utils/constants");
 const sqlStatements_1 = require("@utils/sqlStatements");
@@ -23,8 +22,7 @@ exports.usersRoutes = router;
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const args = { table: constants_1.constants.userTable };
-        const sqlString = (0, sqlStatements_1.selectAll)(args);
-        const result = yield (0, index_1.dbQuery)(sqlString);
+        const result = yield (0, sqlStatements_1.selectAll)(args);
         res.status(200).send(result[0]);
     }
     catch (err) {
@@ -36,8 +34,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get("/emails", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const args = { table: constants_1.constants.userTable, column: "email" };
-        const allUserEmails = (0, sqlStatements_1.selectAll)(args);
-        const result = yield (0, index_1.dbQuery)(allUserEmails);
+        const result = yield (0, sqlStatements_1.selectAll)(args);
         res.status(200).send(result[0]);
     }
     catch (err) {

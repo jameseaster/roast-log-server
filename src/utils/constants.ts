@@ -1,4 +1,4 @@
-import { IConstants } from "src/types";
+import { IConstants } from "@utils/types";
 
 export const constants: IConstants = {
   userTable: "users",

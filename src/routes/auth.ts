@@ -1,6 +1,5 @@
 // Imports
 import passport from "passport";
-import { dbQuery } from "@db/index";
 import { constants } from "@utils/constants";
 import { newRow } from "@utils/sqlStatements";
 import { Router, Request, Response } from "express";
@@ -42,8 +41,7 @@ router.post(
       const { email } = req.body;
       const password = hashPassword(req.body.password);
       const args = { table: constants.userTable, values: { email, password } };
-      const newUserRow = newRow(args);
-      await dbQuery(newUserRow);
+      await newRow(args);
       res.status(201).send({ message: "Registered user" });
     } catch (err) {
       console.log(err);

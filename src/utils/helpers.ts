@@ -2,7 +2,7 @@
 import bcrypt from "bcryptjs";
 import { db } from "@db/index";
 import { RequestHandler } from "express";
-import { IResponseUser } from "src/types";
+import { IResponseUser } from "@utils/types";
 import { check, param } from "express-validator";
 
 // Returns hashed password

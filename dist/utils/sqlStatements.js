@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteRow = exports.updateRow = exports.selectAll = exports.newRow = void 0;
+// Imports
+const index_1 = require("@db/index");
 /**
  * Adds new row to given table with values
  */
@@ -9,15 +11,19 @@ const newRow = ({ table, values }) => {
     const valueStr = Object.values(values)
         .map((v) => `'${v}'`)
         .join(", ");
-    return `insert into ${table} (${keyStr}) values(${valueStr});`;
+    const sqlStr = `insert into ${table} (${keyStr}) values(${valueStr});`;
+    return (0, index_1.dbQuery)(sqlStr);
 };
 exports.newRow = newRow;
 /**
  * Selects all rows from table using where object, order, and a single column if provided
  */
-const selectAll = ({ table, order, where, column }) => {
+const selectAll = ({ table, order, where, column, }) => {
     const whereStr = createWhereStr(where);
-    return `select ${column ? column : "*"} from ${table} ${whereStr} ${order ? `order by ${order === null || order === void 0 ? void 0 : order.join(", ")}` : ""}`;
+    const columnStr = column ? column : "*";
+    const orderStr = order ? `order by ${order === null || order === void 0 ? void 0 : order.join(", ")}` : "";
+    const sqlStr = `select ${columnStr} from ${table} ${whereStr} ${orderStr}`;
+    return (0, index_1.dbQuery)(sqlStr);
 };
 exports.selectAll = selectAll;
 /**
@@ -28,7 +34,8 @@ const updateRow = ({ table, where, values }) => {
         .map((k) => `${k} = '${values[k]}'`)
         .join(", ");
     const whereStr = createWhereStr(where);
-    return `update ${table} set ${setStr} ${whereStr}`;
+    const sqlStr = `update ${table} set ${setStr} ${whereStr}`;
+    return (0, index_1.dbQuery)(sqlStr);
 };
 exports.updateRow = updateRow;
 /**
@@ -36,8 +43,8 @@ exports.updateRow = updateRow;
  */
 const deleteRow = ({ table, where }) => {
     const whereStr = createWhereStr(where);
-    const str = `delete from ${table} ${whereStr}`;
-    return str;
+    const sqlStr = `delete from ${table} ${whereStr}`;
+    return (0, index_1.dbQuery)(sqlStr);
 };
 exports.deleteRow = deleteRow;
 /**

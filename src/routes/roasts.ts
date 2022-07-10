@@ -1,6 +1,5 @@
 // Imports
-import { dbQuery } from "@db/index";
-import { ICreateRoast } from "src/types";
+import { ICreateRoast } from "@utils/types";
 import { Router, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { newRow, selectAll, updateRow, deleteRow } from "@utils/sqlStatements";
@@ -23,8 +22,7 @@ router.get("/", async (req: Request, res: Response) => {
       order: ["date desc", "time"],
       where: { user_email: req.user.email },
     };
-    const roastsByEmail = selectAll(args);
-    const [rows] = await dbQuery(roastsByEmail);
+    const [rows] = await selectAll(args);
     res.status(200).send(rows);
   } catch (err) {
     res.status(400).send(resErrors(["Failed to get roasts"]));
@@ -35,8 +33,7 @@ router.get("/", async (req: Request, res: Response) => {
 router.get("/all", async (req: Request, res: Response) => {
   try {
     const args = { table: constants.roastTable, order: ["date desc", "time"] };
-    const allRoasts = selectAll(args);
-    const result = await dbQuery(allRoasts);
+    const result = await selectAll(args);
     res.status(200).send(result[0]);
   } catch (err) {
     res.status(400).send(resErrors(["Failed to get roasts"]));
@@ -50,8 +47,7 @@ router.post("/", validateCreateRoast(), async (req: Request, res: Response) => {
   try {
     const table = constants.roastTable;
     const values: ICreateRoast = { ...req.body, user_email: req.user.email };
-    const newRoast = newRow({ table, values });
-    await dbQuery(newRoast);
+    await newRow({ table, values });
     res.status(201).send("Created roast");
   } catch (err) {
     console.log(err);
@@ -72,8 +68,7 @@ router.patch("/", validateRoastId(), async (req: Request, res: Response) => {
       order: ["date desc", "time"],
       where: { user_email, id },
     };
-    const roastByEmailAndId = selectAll(args);
-    let [result] = await dbQuery(roastByEmailAndId);
+    let [result] = await selectAll(args);
     const roast = result[0];
     if (!roast) throw new Error("No roast exists");
     // Extract updated values that exist on roast object
@@ -87,8 +82,7 @@ router.patch("/", validateRoastId(), async (req: Request, res: Response) => {
       where: { user_email, id },
       values: updatedValues,
     };
-    const updateStr = updateRow(updateArgs);
-    await dbQuery(updateStr);
+    await updateRow(updateArgs);
     res.status(200).send("Successfully updated");
   } catch (err) {
     console.log(err);
@@ -108,8 +102,7 @@ router.delete(
         table: constants.roastTable,
         where: { user_email: req.user.email, id: req.params.id },
       };
-      const deleteRoast = deleteRow(args);
-      await dbQuery(deleteRoast);
+      await deleteRow(args);
       res.status(200).send("Successfully deleted roast");
     } catch (err) {
       console.log(err);

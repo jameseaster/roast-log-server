@@ -21,8 +21,6 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.roastRoutes = void 0;
-// Imports
-const index_1 = require("@db/index");
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const sqlStatements_1 = require("@utils/sqlStatements");
@@ -39,8 +37,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             order: ["date desc", "time"],
             where: { user_email: req.user.email },
         };
-        const roastsByEmail = (0, sqlStatements_1.selectAll)(args);
-        const [rows] = yield (0, index_1.dbQuery)(roastsByEmail);
+        const [rows] = yield (0, sqlStatements_1.selectAll)(args);
         res.status(200).send(rows);
     }
     catch (err) {
@@ -51,8 +48,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get("/all", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const args = { table: constants_1.constants.roastTable, order: ["date desc", "time"] };
-        const allRoasts = (0, sqlStatements_1.selectAll)(args);
-        const result = yield (0, index_1.dbQuery)(allRoasts);
+        const result = yield (0, sqlStatements_1.selectAll)(args);
         res.status(200).send(result[0]);
     }
     catch (err) {
@@ -67,8 +63,7 @@ router.post("/", (0, helpers_1.validateCreateRoast)(), (req, res) => __awaiter(v
     try {
         const table = constants_1.constants.roastTable;
         const values = Object.assign(Object.assign({}, req.body), { user_email: req.user.email });
-        const newRoast = (0, sqlStatements_1.newRow)({ table, values });
-        yield (0, index_1.dbQuery)(newRoast);
+        yield (0, sqlStatements_1.newRow)({ table, values });
         res.status(201).send("Created roast");
     }
     catch (err) {
@@ -90,8 +85,7 @@ router.patch("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void
             order: ["date desc", "time"],
             where: { user_email, id },
         };
-        const roastByEmailAndId = (0, sqlStatements_1.selectAll)(args);
-        let [result] = yield (0, index_1.dbQuery)(roastByEmailAndId);
+        let [result] = yield (0, sqlStatements_1.selectAll)(args);
         const roast = result[0];
         if (!roast)
             throw new Error("No roast exists");
@@ -107,8 +101,7 @@ router.patch("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void
             where: { user_email, id },
             values: updatedValues,
         };
-        const updateStr = (0, sqlStatements_1.updateRow)(updateArgs);
-        yield (0, index_1.dbQuery)(updateStr);
+        yield (0, sqlStatements_1.updateRow)(updateArgs);
         res.status(200).send("Successfully updated");
     }
     catch (err) {
@@ -126,8 +119,7 @@ router.delete("/:id", (0, helpers_1.validateDeleteParam)(), (req, res) => __awai
             table: constants_1.constants.roastTable,
             where: { user_email: req.user.email, id: req.params.id },
         };
-        const deleteRoast = (0, sqlStatements_1.deleteRow)(args);
-        yield (0, index_1.dbQuery)(deleteRoast);
+        yield (0, sqlStatements_1.deleteRow)(args);
         res.status(200).send("Successfully deleted roast");
     }
     catch (err) {

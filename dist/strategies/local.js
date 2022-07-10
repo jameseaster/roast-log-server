@@ -24,7 +24,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // Imports
-const index_1 = require("@db/index");
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = require("passport-local");
 const constants_1 = require("@utils/constants");
@@ -44,8 +43,7 @@ const verifyCallback = (email, password, done) => __awaiter(void 0, void 0, void
         }
         // Check for exisiting user
         const args = { table: constants_1.constants.userTable, where: { email } };
-        const userByEmail = (0, sqlStatements_1.selectAll)(args);
-        const [rows] = yield index_1.db.promise().query(userByEmail);
+        const [rows] = yield (0, sqlStatements_1.selectAll)(args);
         const dbUser = rows[0];
         // If user is not found
         if (!dbUser) {
@@ -70,8 +68,7 @@ passport_1.default.deserializeUser((email, done) => __awaiter(void 0, void 0, vo
     try {
         // Get user by email
         const args = { table: constants_1.constants.userTable, where: { email } };
-        const userByEmail = (0, sqlStatements_1.selectAll)(args);
-        const [rows] = yield index_1.db.promise().query(userByEmail);
+        const [rows] = yield (0, sqlStatements_1.selectAll)(args);
         const dbUser = rows[0];
         const { password: _ } = dbUser, rest = __rest(dbUser, ["password"]);
         return !dbUser ? done(null, false) : done(null, rest);
