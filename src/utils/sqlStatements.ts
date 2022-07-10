@@ -1,18 +1,4 @@
-// Sql statements for db interactions
-
-interface ICreateRoast {
-  user_email: string;
-  country: string;
-  region: string;
-  process: string;
-  date: string;
-  time: string;
-  green_weight: number;
-  roasted_weight: number;
-  first_crack: number;
-  cool_down: number;
-  vac_to_250: number;
-}
+import { ICreateRoast } from "src/types";
 
 const sqlStatements = {
   addUser: (e: string, p: string) =>

@@ -1,16 +1,9 @@
 // Imports
 import bcrypt from "bcryptjs";
 import { db } from "@db/index";
-import { RowDataPacket } from "mysql2";
 import { RequestHandler } from "express";
+import { IResponseUser } from "src/types";
 import { check, param } from "express-validator";
-
-// Types
-interface IResponseUser extends RowDataPacket {
-  id: number;
-  email: string;
-  password: string;
-}
 
 // Returns hashed password
 function hashPassword(password: string) {

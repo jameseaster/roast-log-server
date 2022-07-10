@@ -1,24 +1,10 @@
 // Imports
 import { db } from "@db/index";
 import passport from "passport";
-import { RowDataPacket } from "mysql2";
+import { IResponseUser } from "src/types";
 import { Strategy } from "passport-local";
 import { sql } from "@utils/sqlStatements";
 import { comparePasswords } from "@utils/helpers";
-
-// Types
-interface IUser {
-  id: number;
-  email: string;
-  password: string;
-}
-
-// Types
-interface IResponseUser extends RowDataPacket {
-  id: number;
-  email: string;
-  password: string;
-}
 
 // Use these fields from database
 const customFields = {

@@ -1,7 +1,7 @@
 // Imports
 import { db } from "@db/index";
-import { RowDataPacket } from "mysql2";
 import { sql } from "@utils/sqlStatements";
+import { IResponseUser } from "src/types";
 import { Router, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import {
@@ -10,13 +10,6 @@ import {
   validateCreateRoast,
   validateDeleteParam,
 } from "@utils/helpers";
-
-// Types FIXME: DUPLICATED
-interface IResponseUser extends RowDataPacket {
-  id: number;
-  email: string;
-  password: string;
-}
 
 // Constants
 const router = Router();
