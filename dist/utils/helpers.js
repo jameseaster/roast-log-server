@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateCreateRoast = exports.comparePasswords = exports.validateRoastId = exports.validateSignup = exports.authenticate = exports.hashPassword = exports.resErrors = void 0;
+exports.validateDeleteParam = exports.validateCreateRoast = exports.comparePasswords = exports.validateRoastId = exports.validateSignup = exports.authenticate = exports.hashPassword = exports.resErrors = void 0;
 // Imports
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const index_1 = require("../database/index");
@@ -95,6 +95,27 @@ exports.validateCreateRoast = validateCreateRoast;
  */
 const validateRoastId = () => (0, express_validator_1.check)("id").notEmpty().withMessage("ID cannot be empty");
 exports.validateRoastId = validateRoastId;
+/**
+ * Validate roast id value
+ */
+const validateDeleteParam = () => [
+    (0, express_validator_1.param)("id")
+        .exists()
+        .toInt()
+        .custom((value, { req }) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
+        const id = (_a = req === null || req === void 0 ? void 0 : req.params) === null || _a === void 0 ? void 0 : _a.id;
+        const { email } = req.user;
+        const sqlStr = `select * from roasts where user_email = '${email}' and id = '${id}';`;
+        const [rows] = yield index_1.db.promise().query(sqlStr);
+        const dbUser = rows[0];
+        if (!dbUser)
+            throw new Error("Roast does not exist");
+        else
+            return value;
+    })),
+];
+exports.validateDeleteParam = validateDeleteParam;
 // Returns an error object with an array of error messages
 const resErrors = (errors) => {
     return { errors: errors.map((e) => ({ message: e })) };

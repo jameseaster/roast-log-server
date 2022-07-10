@@ -8,6 +8,7 @@ import {
   resErrors,
   validateRoastId,
   validateCreateRoast,
+  validateDeleteParam,
 } from "../utils/helpers";
 
 // Types FIXME: DUPLICATED
@@ -99,13 +100,13 @@ router.delete("/", validateRoastId(), async (req: Request, res: Response) => {
 
 // Delete roast by roast id
 router.delete(
-  "/by-id",
-  validateRoastId(),
+  "/:id",
+  validateDeleteParam(),
   async (req: Request, res: Response) => {
     const e = validationResult(req);
     if (!e.isEmpty()) return res.status(404).json({ errors: e.array() });
     try {
-      const deleteSqlStr = `delete from roasts where id = '${req.body.id}'`;
+      const deleteSqlStr = `delete from roasts where user_email = '${req.user.email}' and id = '${req.params.id}'`;
       await db.promise().query<IResponseUser[]>(deleteSqlStr);
       res.status(200).send("Successfully deleted roast");
     } catch (err) {

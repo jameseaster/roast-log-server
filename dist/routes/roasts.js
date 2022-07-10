@@ -113,12 +113,12 @@ router.delete("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(voi
     }
 }));
 // Delete roast by roast id
-router.delete("/by-id", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete("/:id", (0, helpers_1.validateDeleteParam)(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const e = (0, express_validator_1.validationResult)(req);
     if (!e.isEmpty())
         return res.status(404).json({ errors: e.array() });
     try {
-        const deleteSqlStr = `delete from roasts where id = '${req.body.id}'`;
+        const deleteSqlStr = `delete from roasts where user_email = '${req.user.email}' and id = '${req.params.id}'`;
         yield database_1.db.promise().query(deleteSqlStr);
         res.status(200).send("Successfully deleted roast");
     }

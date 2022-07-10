@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { RowDataPacket } from "mysql2";
 import { db } from "../database/index";
 import { RequestHandler } from "express";
-import { check } from "express-validator";
+import { check, param } from "express-validator";
 
 // Types
 interface IResponseUser extends RowDataPacket {
@@ -86,6 +86,24 @@ const validateCreateRoast = () => [
 const validateRoastId = () =>
   check("id").notEmpty().withMessage("ID cannot be empty");
 
+/**
+ * Validate roast id value
+ */
+const validateDeleteParam = () => [
+  param("id")
+    .exists()
+    .toInt()
+    .custom(async (value, { req }) => {
+      const id = req?.params?.id;
+      const { email } = req.user;
+      const sqlStr = `select * from roasts where user_email = '${email}' and id = '${id}';`;
+      const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
+      const dbUser = rows[0];
+      if (!dbUser) throw new Error("Roast does not exist");
+      else return value;
+    }),
+];
+
 // Returns an error object with an array of error messages
 const resErrors = (errors: string[]) => {
   return { errors: errors.map((e) => ({ message: e })) };
@@ -99,4 +117,5 @@ export {
   validateRoastId,
   comparePasswords,
   validateCreateRoast,
+  validateDeleteParam,
 };
