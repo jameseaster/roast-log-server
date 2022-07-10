@@ -19,7 +19,7 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     const args = {
       table: constants.roastTable,
-      order: ["date desc", "time"],
+      order: ["date desc", "time desc"],
       where: { user_email: req.user.email },
     };
     const [rows] = await selectAll(args);
@@ -32,7 +32,10 @@ router.get("/", async (req: Request, res: Response) => {
 // Get all roasts
 router.get("/all", async (req: Request, res: Response) => {
   try {
-    const args = { table: constants.roastTable, order: ["date desc", "time"] };
+    const args = {
+      table: constants.roastTable,
+      order: ["date desc", "time desc"],
+    };
     const result = await selectAll(args);
     res.status(200).send(result[0]);
   } catch (err) {
@@ -65,7 +68,6 @@ router.patch("/", validateRoastId(), async (req: Request, res: Response) => {
     const user_email = req.user.email;
     const args = {
       table: constants.roastTable,
-      order: ["date desc", "time"],
       where: { user_email, id },
     };
     let [result] = await selectAll(args);

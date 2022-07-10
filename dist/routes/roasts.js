@@ -34,7 +34,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const args = {
             table: constants_1.constants.roastTable,
-            order: ["date desc", "time"],
+            order: ["date desc", "time desc"],
             where: { user_email: req.user.email },
         };
         const [rows] = yield (0, sqlQueries_1.selectAll)(args);
@@ -47,7 +47,10 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 // Get all roasts
 router.get("/all", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const args = { table: constants_1.constants.roastTable, order: ["date desc", "time"] };
+        const args = {
+            table: constants_1.constants.roastTable,
+            order: ["date desc", "time desc"],
+        };
         const result = yield (0, sqlQueries_1.selectAll)(args);
         res.status(200).send(result[0]);
     }
@@ -82,7 +85,6 @@ router.patch("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void
         const user_email = req.user.email;
         const args = {
             table: constants_1.constants.roastTable,
-            order: ["date desc", "time"],
             where: { user_email, id },
         };
         let [result] = yield (0, sqlQueries_1.selectAll)(args);
