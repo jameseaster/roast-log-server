@@ -1,7 +1,7 @@
 // Imports
 import passport from "passport";
 import { constants } from "@utils/constants";
-import { newRow } from "@utils/sqlStatements";
+import { newRow } from "@utils/sqlQueries";
 import { Router, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { hashPassword, resErrors, validateSignup } from "@utils/helpers";

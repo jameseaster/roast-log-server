@@ -2,7 +2,7 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
 import { constants } from "@utils/constants";
-import { selectAll } from "@utils/sqlStatements";
+import { selectAll } from "@utils/sqlQueries";
 import { comparePasswords } from "@utils/helpers";
 
 // Use these fields from database

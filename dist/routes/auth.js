@@ -16,7 +16,7 @@ exports.authRoutes = void 0;
 // Imports
 const passport_1 = __importDefault(require("passport"));
 const constants_1 = require("@utils/constants");
-const sqlStatements_1 = require("@utils/sqlStatements");
+const sqlQueries_1 = require("@utils/sqlQueries");
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const helpers_1 = require("@utils/helpers");
@@ -50,7 +50,7 @@ router.post("/register", (0, helpers_1.validateSignup)(), (req, res) => __awaite
         const { email } = req.body;
         const password = (0, helpers_1.hashPassword)(req.body.password);
         const args = { table: constants_1.constants.userTable, values: { email, password } };
-        yield (0, sqlStatements_1.newRow)(args);
+        yield (0, sqlQueries_1.newRow)(args);
         res.status(201).send({ message: "Registered user" });
     }
     catch (err) {

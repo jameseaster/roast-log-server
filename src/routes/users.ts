@@ -1,7 +1,7 @@
 // Imports
 import { resErrors } from "@utils/helpers";
 import { constants } from "@utils/constants";
-import { selectAll } from "@utils/sqlStatements";
+import { selectAll } from "@utils/sqlQueries";
 import { Router, Request, Response } from "express";
 
 // Constants

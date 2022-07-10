@@ -13,7 +13,7 @@ exports.usersRoutes = void 0;
 // Imports
 const helpers_1 = require("@utils/helpers");
 const constants_1 = require("@utils/constants");
-const sqlStatements_1 = require("@utils/sqlStatements");
+const sqlQueries_1 = require("@utils/sqlQueries");
 const express_1 = require("express");
 // Constants
 const router = (0, express_1.Router)();
@@ -22,7 +22,7 @@ exports.usersRoutes = router;
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const args = { table: constants_1.constants.userTable };
-        const result = yield (0, sqlStatements_1.selectAll)(args);
+        const result = yield (0, sqlQueries_1.selectAll)(args);
         res.status(200).send(result[0]);
     }
     catch (err) {
@@ -34,7 +34,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get("/emails", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const args = { table: constants_1.constants.userTable, column: "email" };
-        const result = yield (0, sqlStatements_1.selectAll)(args);
+        const result = yield (0, sqlQueries_1.selectAll)(args);
         res.status(200).send(result[0]);
     }
     catch (err) {

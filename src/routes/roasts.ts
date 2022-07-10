@@ -2,7 +2,7 @@
 import { ICreateRoast } from "@utils/types";
 import { Router, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { newRow, selectAll, updateRow, deleteRow } from "@utils/sqlStatements";
+import { newRow, selectAll, updateRow, deleteRow } from "@utils/sqlQueries";
 import {
   resErrors,
   validateRoastId,
