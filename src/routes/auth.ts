@@ -1,7 +1,8 @@
 // Imports
 import passport from "passport";
-import { db } from "@db/index";
-import { sql } from "@utils/sqlStatements";
+import { dbQuery } from "@db/index";
+import { constants } from "@utils/constants";
+import { newRow } from "@utils/sqlStatements";
 import { Router, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { hashPassword, resErrors, validateSignup } from "@utils/helpers";
@@ -40,8 +41,9 @@ router.post(
     try {
       const { email } = req.body;
       const password = hashPassword(req.body.password);
-      const sqlString = sql.addUser(email, password);
-      await db.promise().query(sqlString);
+      const args = { table: constants.userTable, values: { email, password } };
+      const newUserRow = newRow(args);
+      await dbQuery(newUserRow);
       res.status(201).send({ message: "Registered user" });
     } catch (err) {
       console.log(err);

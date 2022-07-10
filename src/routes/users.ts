@@ -1,7 +1,8 @@
 // Imports
-import { db } from "@db/index";
-import { sql } from "@utils/sqlStatements";
+import { dbQuery } from "@db/index";
 import { resErrors } from "@utils/helpers";
+import { constants } from "@utils/constants";
+import { selectAll } from "@utils/sqlStatements";
 import { Router, Request, Response } from "express";
 
 // Constants
@@ -10,8 +11,9 @@ const router = Router();
 // All users
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const sqlString = sql.getAllUsers();
-    const result = await db.promise().query(sqlString);
+    const args = { table: constants.userTable };
+    const sqlString = selectAll(args);
+    const result = await dbQuery(sqlString);
     res.status(200).send(result[0]);
   } catch (err) {
     console.log(err);
@@ -22,8 +24,9 @@ router.get("/", async (req: Request, res: Response) => {
 // All user emails
 router.get("/emails", async (req: Request, res: Response) => {
   try {
-    const sqlString = sql.getAllEmails();
-    const result = await db.promise().query(sqlString);
+    const args = { table: constants.userTable, column: "email" };
+    const allUserEmails = selectAll(args);
+    const result = await dbQuery(allUserEmails);
     res.status(200).send(result[0]);
   } catch (err) {
     console.log(err);

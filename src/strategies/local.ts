@@ -3,7 +3,8 @@ import { db } from "@db/index";
 import passport from "passport";
 import { IResponseUser } from "src/types";
 import { Strategy } from "passport-local";
-import { sql } from "@utils/sqlStatements";
+import { constants } from "@utils/constants";
+import { selectAll } from "@utils/sqlStatements";
 import { comparePasswords } from "@utils/helpers";
 
 // Use these fields from database
@@ -20,8 +21,9 @@ const verifyCallback = async (email: string, password: string, done: any) => {
       return done(null, false, { message: "Missing credentials" });
     }
     // Check for exisiting user
-    const sqlStr = sql.getUserByEmail(email);
-    const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
+    const args = { table: constants.userTable, where: { email } };
+    const userByEmail = selectAll(args);
+    const [rows] = await db.promise().query<IResponseUser[]>(userByEmail);
     const dbUser = rows[0];
     // If user is not found
     if (!dbUser) {
@@ -46,8 +48,9 @@ passport.serializeUser<any, any>((req, user: any, done) => {
 passport.deserializeUser(async (email: string, done) => {
   try {
     // Get user by email
-    const sqlStr = sql.getUserByEmail(email);
-    const [rows] = await db.promise().query<IResponseUser[]>(sqlStr);
+    const args = { table: constants.userTable, where: { email } };
+    const userByEmail = selectAll(args);
+    const [rows] = await db.promise().query<IResponseUser[]>(userByEmail);
     const dbUser = rows[0];
     const { password: _, ...rest } = dbUser;
     return !dbUser ? done(null, false) : done(null, rest);

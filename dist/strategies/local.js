@@ -27,6 +27,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("@db/index");
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = require("passport-local");
+const constants_1 = require("@utils/constants");
 const sqlStatements_1 = require("@utils/sqlStatements");
 const helpers_1 = require("@utils/helpers");
 // Use these fields from database
@@ -42,8 +43,9 @@ const verifyCallback = (email, password, done) => __awaiter(void 0, void 0, void
             return done(null, false, { message: "Missing credentials" });
         }
         // Check for exisiting user
-        const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
-        const [rows] = yield index_1.db.promise().query(sqlStr);
+        const args = { table: constants_1.constants.userTable, where: { email } };
+        const userByEmail = (0, sqlStatements_1.selectAll)(args);
+        const [rows] = yield index_1.db.promise().query(userByEmail);
         const dbUser = rows[0];
         // If user is not found
         if (!dbUser) {
@@ -67,8 +69,9 @@ passport_1.default.serializeUser((req, user, done) => {
 passport_1.default.deserializeUser((email, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Get user by email
-        const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
-        const [rows] = yield index_1.db.promise().query(sqlStr);
+        const args = { table: constants_1.constants.userTable, where: { email } };
+        const userByEmail = (0, sqlStatements_1.selectAll)(args);
+        const [rows] = yield index_1.db.promise().query(userByEmail);
         const dbUser = rows[0];
         const { password: _ } = dbUser, rest = __rest(dbUser, ["password"]);
         return !dbUser ? done(null, false) : done(null, rest);

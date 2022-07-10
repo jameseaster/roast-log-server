@@ -2,6 +2,7 @@
 require("dotenv").config();
 import mysql from "mysql2";
 import config from "@utils/config";
+import { IResponseUser } from "src/types";
 
 // DB Options
 export const options = {
@@ -30,4 +31,8 @@ connection.connect((err) =>
     : console.log(`📦 Connected to MySql: ${process.env.DB_NAME}`)
 );
 
-export { connection as db };
+// Returns a promise to await from querying the database
+const dbQuery = (sqlStatement: string) =>
+  connection.promise().query<IResponseUser[]>(sqlStatement);
+
+export { connection as db, dbQuery };

@@ -1,27 +1,58 @@
-import { ICreateRoast } from "src/types";
+// Imports
+import { IUpdateRow, INewRow, ISelectAll, IDeleteRow } from "src/types";
 
-const sqlStatements = {
-  addUser: (e: string, p: string) =>
-    `insert into users(email, password) values('${e}', '${p}');`,
-  getAllRoasts: () => "select * from roasts order by date desc, time;",
-  getRoastsByUserEmail: (e: string) =>
-    `select * from roasts where user_email = '${e}' order by date desc, time;`,
-  getAllEmails: () => "select email from users;",
-  getAllUsers: () => "select * from users;",
-  getUserByEmail: (e: string) => `select * from users where email = '${e}';`,
-  getSessionInfo: () => `select * from sessions`,
-  createRoast: (params: ICreateRoast) =>
-    `insert into roasts (user_email, country, region, process, date, time, green_weight, roasted_weight, first_crack, cool_down, vac_to_250) values('${params.user_email}', '${params.country}', '${params.region}', '${params.process}', '${params.date}', '${params.time}', ${params.green_weight}, ${params.roasted_weight}, ${params.first_crack}, ${params.cool_down}, ${params.vac_to_250})`,
-  update: (
-    table: string,
-    whereStr: string,
-    updateValues: { [key: string]: string | number }
-  ) => {
-    const setStr = Object.keys(updateValues)
-      .map((k) => `${k} = '${updateValues[k]}'`)
-      .join(", ");
-    return `update ${table} set ${setStr} ${whereStr}`;
-  },
+/**
+ * Adds new row to given table with values
+ */
+export const newRow = ({ table, values }: INewRow): string => {
+  const keyStr = Object.keys(values).join(", ");
+  const valueStr = Object.values(values)
+    .map((v) => `'${v}'`)
+    .join(", ");
+  return `insert into ${table} (${keyStr}) values(${valueStr});`;
 };
 
-export { sqlStatements as sql };
+/**
+ * Selects all rows from table using where object, order, and a single column if provided
+ */
+export const selectAll = ({ table, order, where, column }: ISelectAll) => {
+  const whereStr = createWhereStr(where);
+  return `select ${column ? column : "*"} from ${table} ${whereStr} ${
+    order ? `order by ${order?.join(", ")}` : ""
+  }`;
+};
+
+/**
+ * Updates row in table based on where and values objects
+ */
+export const updateRow = ({ table, where, values }: IUpdateRow) => {
+  const setStr = Object.keys(values)
+    .map((k) => `${k} = '${values[k]}'`)
+    .join(", ");
+  const whereStr = createWhereStr(where);
+  return `update ${table} set ${setStr} ${whereStr}`;
+};
+
+/**
+ * Deletes row from table based on where values
+ */
+export const deleteRow = ({ table, where }: IDeleteRow) => {
+  const whereStr = createWhereStr(where);
+  const str = `delete from ${table} ${whereStr}`;
+  return str;
+};
+
+/**
+ * Takes in an object and returns a sql where statement string
+ */
+const createWhereStr = (
+  where: { [key: string]: string | number } | undefined
+) =>
+  where
+    ? "where" +
+      Object.keys(where).reduce((all, key, idx) => {
+        return idx === 0
+          ? `${all} ${key} = '${where[key]}'`
+          : `${all} and ${key} = '${where[key]}'`;
+      }, "")
+    : "";

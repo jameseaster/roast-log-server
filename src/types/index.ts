@@ -1,5 +1,12 @@
 import { RowDataPacket } from "mysql2";
 
+export interface IConstants {
+  userTable: TableName;
+  roastTable: TableName;
+}
+
+export type TableName = "users" | "roasts";
+
 export interface IResponseUser extends RowDataPacket {
   id: number;
   email: string;
@@ -18,4 +25,27 @@ export interface ICreateRoast {
   first_crack: number;
   green_weight: number;
   roasted_weight: number;
+}
+
+export interface INewRow {
+  table: TableName;
+  values: { [key: string]: string | number } | ICreateRoast;
+}
+
+export interface ISelectAll {
+  column?: string;
+  order?: string[];
+  table: TableName;
+  where?: { [key: string]: string | number };
+}
+
+export interface IUpdateRow {
+  table: TableName;
+  where: { [key: string]: string | number };
+  values: { [key: string]: string | number };
+}
+
+export interface IDeleteRow {
+  table: TableName;
+  where: { [key: string]: string | number };
 }

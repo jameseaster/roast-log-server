@@ -12,8 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRoutes = void 0;
 // Imports
 const index_1 = require("@db/index");
-const sqlStatements_1 = require("@utils/sqlStatements");
 const helpers_1 = require("@utils/helpers");
+const constants_1 = require("@utils/constants");
+const sqlStatements_1 = require("@utils/sqlStatements");
 const express_1 = require("express");
 // Constants
 const router = (0, express_1.Router)();
@@ -21,8 +22,9 @@ exports.usersRoutes = router;
 // All users
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const sqlString = sqlStatements_1.sql.getAllUsers();
-        const result = yield index_1.db.promise().query(sqlString);
+        const args = { table: constants_1.constants.userTable };
+        const sqlString = (0, sqlStatements_1.selectAll)(args);
+        const result = yield (0, index_1.dbQuery)(sqlString);
         res.status(200).send(result[0]);
     }
     catch (err) {
@@ -33,8 +35,9 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 // All user emails
 router.get("/emails", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const sqlString = sqlStatements_1.sql.getAllEmails();
-        const result = yield index_1.db.promise().query(sqlString);
+        const args = { table: constants_1.constants.userTable, column: "email" };
+        const allUserEmails = (0, sqlStatements_1.selectAll)(args);
+        const result = yield (0, index_1.dbQuery)(allUserEmails);
         res.status(200).send(result[0]);
     }
     catch (err) {
