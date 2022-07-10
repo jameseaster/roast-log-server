@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateDeleteParam = exports.validateCreateRoast = exports.comparePasswords = exports.validateRoastId = exports.validateSignup = exports.authenticate = exports.hashPassword = exports.resErrors = void 0;
 // Imports
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const index_1 = require("../database/index");
+const index_1 = require("@db/index");
 const express_validator_1 = require("express-validator");
 // Returns hashed password
 function hashPassword(password) {

@@ -7,17 +7,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Imports
 const cors_1 = __importDefault(require("cors"));
 require("dotenv").config();
+require("module-alias/register");
 const passport_1 = __importDefault(require("passport"));
 const promise_1 = __importDefault(require("mysql2/promise"));
 const express_session_1 = __importDefault(require("express-session"));
 const express_1 = __importDefault(require("express"));
-const helpers_1 = require("./utils/helpers");
-const database_1 = require("./database");
+const helpers_1 = require("@utils/helpers");
+const index_1 = require("@db/index");
 // Routes
-const config_1 = __importDefault(require("./utils/config"));
-const auth_1 = require("./routes/auth");
-const users_1 = require("./routes/users");
-const roasts_1 = require("./routes/roasts");
+const config_1 = __importDefault(require("@utils/config"));
+const auth_1 = require("@routes/auth");
+const users_1 = require("@routes/users");
+const roasts_1 = require("@routes/roasts");
 // Auth strategies
 require("./strategies/local");
 // Constants
@@ -25,9 +26,9 @@ const app = (0, express_1.default)();
 const port = process.env.APP_PORT;
 const IN_PROD = process.env.NODE_ENV === "production";
 // Session store
-const connection = promise_1.default.createPool(database_1.options);
+const connection = promise_1.default.createPool(index_1.options);
 const MySQLStore = require("express-mysql-session")(express_session_1.default);
-const sessionStore = new MySQLStore(database_1.sessionOptions, connection);
+const sessionStore = new MySQLStore(index_1.sessionOptions, connection);
 // Middleware
 app.use((0, cors_1.default)({
     credentials: true,

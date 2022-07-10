@@ -22,11 +22,11 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.roastRoutes = void 0;
 // Imports
-const database_1 = require("../database");
-const sqlStatements_1 = require("../utils/sqlStatements");
+const index_1 = require("@db/index");
+const sqlStatements_1 = require("@utils/sqlStatements");
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const helpers_1 = require("../utils/helpers");
+const helpers_1 = require("@utils/helpers");
 // Constants
 const router = (0, express_1.Router)();
 exports.roastRoutes = router;
@@ -34,7 +34,7 @@ exports.roastRoutes = router;
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sqlStr = sqlStatements_1.sql.getRoastsByUserEmail(req.user.email);
-        const [rows] = yield database_1.db.promise().query(sqlStr);
+        const [rows] = yield index_1.db.promise().query(sqlStr);
         res.status(200).send(rows);
     }
     catch (err) {
@@ -45,7 +45,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get("/all", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sqlString = sqlStatements_1.sql.getAllRoasts();
-        const result = yield database_1.db.promise().query(sqlString);
+        const result = yield index_1.db.promise().query(sqlString);
         res.status(200).send(result[0]);
     }
     catch (err) {
@@ -59,7 +59,7 @@ router.post("/", (0, helpers_1.validateCreateRoast)(), (req, res) => __awaiter(v
         return res.status(404).json({ errors: e.array() });
     try {
         const sqlStr = sqlStatements_1.sql.createRoast(Object.assign(Object.assign({}, req.body), { user_email: req.user.email }));
-        yield database_1.db.promise().query(sqlStr);
+        yield index_1.db.promise().query(sqlStr);
         res.status(201).send("Created roast");
     }
     catch (err) {
@@ -77,7 +77,7 @@ router.patch("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void
         const _a = req.body, { id } = _a, rest = __rest(_a, ["id"]);
         const whereStr = ` where user_email = '${req.user.email}' and id = ${id}`;
         const sqlStr = "select * from roasts " + whereStr;
-        let [result] = yield database_1.db.promise().query(sqlStr);
+        let [result] = yield index_1.db.promise().query(sqlStr);
         const roast = result[0];
         if (!roast)
             throw new Error("No roast exists");
@@ -89,7 +89,7 @@ router.patch("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void
         });
         // Update row
         const updateStr = sqlStatements_1.sql.update("roasts", whereStr, updatedValues);
-        yield database_1.db.promise().query(updateStr);
+        yield index_1.db.promise().query(updateStr);
         res.status(200).send("Successfully updated");
     }
     catch (err) {
@@ -105,7 +105,7 @@ router.delete("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(voi
     try {
         const whereStr = ` where user_email = '${req.user.email}' and id = ${req.body.id}`;
         const deleteSqlStr = "delete from roasts" + whereStr;
-        yield database_1.db.promise().query(deleteSqlStr);
+        yield index_1.db.promise().query(deleteSqlStr);
         res.status(200).send("Successfully deleted roast");
     }
     catch (err) {
@@ -119,7 +119,7 @@ router.delete("/:id", (0, helpers_1.validateDeleteParam)(), (req, res) => __awai
         return res.status(404).json({ errors: e.array() });
     try {
         const deleteSqlStr = `delete from roasts where user_email = '${req.user.email}' and id = '${req.params.id}'`;
-        yield database_1.db.promise().query(deleteSqlStr);
+        yield index_1.db.promise().query(deleteSqlStr);
         res.status(200).send("Successfully deleted roast");
     }
     catch (err) {

@@ -24,11 +24,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // Imports
+const index_1 = require("@db/index");
 const passport_1 = __importDefault(require("passport"));
-const database_1 = require("../database");
 const passport_local_1 = require("passport-local");
-const sqlStatements_1 = require("../utils/sqlStatements");
-const helpers_1 = require("../utils/helpers");
+const sqlStatements_1 = require("@utils/sqlStatements");
+const helpers_1 = require("@utils/helpers");
 // Use these fields from database
 const customFields = {
     usernameField: "email",
@@ -43,7 +43,7 @@ const verifyCallback = (email, password, done) => __awaiter(void 0, void 0, void
         }
         // Check for exisiting user
         const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
-        const [rows] = yield database_1.db.promise().query(sqlStr);
+        const [rows] = yield index_1.db.promise().query(sqlStr);
         const dbUser = rows[0];
         // If user is not found
         if (!dbUser) {
@@ -68,7 +68,7 @@ passport_1.default.deserializeUser((email, done) => __awaiter(void 0, void 0, vo
     try {
         // Get user by email
         const sqlStr = sqlStatements_1.sql.getUserByEmail(email);
-        const [rows] = yield database_1.db.promise().query(sqlStr);
+        const [rows] = yield index_1.db.promise().query(sqlStr);
         const dbUser = rows[0];
         const { password: _ } = dbUser, rest = __rest(dbUser, ["password"]);
         return !dbUser ? done(null, false) : done(null, rest);

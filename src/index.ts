@@ -1,18 +1,19 @@
 // Imports
 import cors from "cors";
 require("dotenv").config();
+import "module-alias/register";
 import passport from "passport";
 import mysql2 from "mysql2/promise";
 import session from "express-session";
 import express, { Express } from "express";
-import { authenticate } from "./utils/helpers";
-import { options, sessionOptions } from "./database";
+import { authenticate } from "@utils/helpers";
+import { options, sessionOptions } from "@db/index";
 
 // Routes
-import config from "./utils/config";
-import { authRoutes } from "./routes/auth";
-import { usersRoutes } from "./routes/users";
-import { roastRoutes } from "./routes/roasts";
+import config from "@utils/config";
+import { authRoutes } from "@routes/auth";
+import { usersRoutes } from "@routes/users";
+import { roastRoutes } from "@routes/roasts";
 
 // Auth strategies
 require("./strategies/local");

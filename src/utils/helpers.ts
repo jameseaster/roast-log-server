@@ -1,7 +1,7 @@
 // Imports
 import bcrypt from "bcryptjs";
+import { db } from "@db/index";
 import { RowDataPacket } from "mysql2";
-import { db } from "../database/index";
 import { RequestHandler } from "express";
 import { check, param } from "express-validator";
 

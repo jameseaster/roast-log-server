@@ -1,10 +1,10 @@
 // Imports
 import passport from "passport";
-import { db } from "../database/index";
-import { sql } from "../utils/sqlStatements";
+import { db } from "@db/index";
+import { sql } from "@utils/sqlStatements";
 import { Router, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { hashPassword, resErrors, validateSignup } from "../utils/helpers";
+import { hashPassword, resErrors, validateSignup } from "@utils/helpers";
 
 // Constants
 const router = Router();

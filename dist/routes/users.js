@@ -11,9 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRoutes = void 0;
 // Imports
-const database_1 = require("../database");
-const helpers_1 = require("../utils/helpers");
-const sqlStatements_1 = require("../utils/sqlStatements");
+const index_1 = require("@db/index");
+const sqlStatements_1 = require("@utils/sqlStatements");
+const helpers_1 = require("@utils/helpers");
 const express_1 = require("express");
 // Constants
 const router = (0, express_1.Router)();
@@ -22,7 +22,7 @@ exports.usersRoutes = router;
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sqlString = sqlStatements_1.sql.getAllUsers();
-        const result = yield database_1.db.promise().query(sqlString);
+        const result = yield index_1.db.promise().query(sqlString);
         res.status(200).send(result[0]);
     }
     catch (err) {
@@ -34,7 +34,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get("/emails", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sqlString = sqlStatements_1.sql.getAllEmails();
-        const result = yield database_1.db.promise().query(sqlString);
+        const result = yield index_1.db.promise().query(sqlString);
         res.status(200).send(result[0]);
     }
     catch (err) {

@@ -1,10 +1,10 @@
 // Imports
+import { db } from "@db/index";
 import passport from "passport";
-import { db } from "../database";
 import { RowDataPacket } from "mysql2";
 import { Strategy } from "passport-local";
-import { sql } from "../utils/sqlStatements";
-import { comparePasswords } from "../utils/helpers";
+import { sql } from "@utils/sqlStatements";
+import { comparePasswords } from "@utils/helpers";
 
 // Types
 interface IUser {

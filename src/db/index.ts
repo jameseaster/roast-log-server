@@ -1,7 +1,7 @@
 // Imports
 require("dotenv").config();
 import mysql from "mysql2";
-import config from "../utils/config";
+import config from "@utils/config";
 
 // DB Options
 export const options = {

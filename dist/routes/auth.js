@@ -15,11 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRoutes = void 0;
 // Imports
 const passport_1 = __importDefault(require("passport"));
-const index_1 = require("../database/index");
-const sqlStatements_1 = require("../utils/sqlStatements");
+const index_1 = require("@db/index");
+const sqlStatements_1 = require("@utils/sqlStatements");
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const helpers_1 = require("../utils/helpers");
+const helpers_1 = require("@utils/helpers");
 // Constants
 const router = (0, express_1.Router)();
 exports.authRoutes = router;

@@ -1,7 +1,7 @@
 // Imports
-import { db } from "../database";
-import { resErrors } from "../utils/helpers";
-import { sql } from "../utils/sqlStatements";
+import { db } from "@db/index";
+import { sql } from "@utils/sqlStatements";
+import { resErrors } from "@utils/helpers";
 import { Router, Request, Response } from "express";
 
 // Constants

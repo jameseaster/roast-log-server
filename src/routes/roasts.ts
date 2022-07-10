@@ -1,7 +1,7 @@
 // Imports
-import { db } from "../database";
+import { db } from "@db/index";
 import { RowDataPacket } from "mysql2";
-import { sql } from "../utils/sqlStatements";
+import { sql } from "@utils/sqlStatements";
 import { Router, Request, Response } from "express";
 import { validationResult } from "express-validator";
 import {
@@ -9,7 +9,7 @@ import {
   validateRoastId,
   validateCreateRoast,
   validateDeleteParam,
-} from "../utils/helpers";
+} from "@utils/helpers";
 
 // Types FIXME: DUPLICATED
 interface IResponseUser extends RowDataPacket {
