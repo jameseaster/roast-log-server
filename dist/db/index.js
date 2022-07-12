@@ -3,11 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbQuery = exports.db = exports.sessionOptions = exports.options = void 0;
+exports.dbCreate = exports.dbQuery = exports.db = exports.sessionOptions = exports.options = void 0;
 // Imports
 require("dotenv").config();
-const mysql2_1 = __importDefault(require("mysql2"));
 const config_1 = __importDefault(require("@utils/config"));
+const mysql2_1 = __importDefault(require("mysql2"));
 // DB Options
 exports.options = {
     host: process.env.DB_HOST,
@@ -28,3 +28,6 @@ connection.connect((err) => err
 // Returns a promise to await from querying the database
 const dbQuery = (sqlStatement) => connection.promise().query(sqlStatement);
 exports.dbQuery = dbQuery;
+// Returns a promise to await from creating a row in a table
+const dbCreate = (sqlStatement) => connection.promise().query(sqlStatement);
+exports.dbCreate = dbCreate;

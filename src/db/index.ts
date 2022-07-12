@@ -1,8 +1,8 @@
 // Imports
 require("dotenv").config();
-import mysql from "mysql2";
 import config from "@utils/config";
 import { IResponseUser } from "@utils/types";
+import mysql, { ResultSetHeader } from "mysql2";
 
 // DB Options
 export const options = {
@@ -35,4 +35,8 @@ connection.connect((err) =>
 const dbQuery = (sqlStatement: string) =>
   connection.promise().query<IResponseUser[]>(sqlStatement);
 
-export { connection as db, dbQuery };
+// Returns a promise to await from creating a row in a table
+const dbCreate = (sqlStatement: string) =>
+  connection.promise().query<ResultSetHeader>(sqlStatement);
+
+export { connection as db, dbQuery, dbCreate };

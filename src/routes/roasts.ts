@@ -50,8 +50,11 @@ router.post("/", validateCreateRoast(), async (req: Request, res: Response) => {
   try {
     const table = constants.roastTable;
     const values: ICreateRoast = { ...req.body, user_email: req.user.email };
-    await newRow({ table, values });
-    res.status(201).send("Created roast");
+    const [result] = await newRow({ table, values });
+    const newUserId = result.insertId;
+    const data = { id: newUserId, ...values };
+    // Send status, data, & message
+    res.status(201).send({ data, message: "Created roast" });
   } catch (err) {
     console.log(err);
     res.status(400).send(resErrors(["Failed to create roast"]));
@@ -85,7 +88,9 @@ router.patch("/", validateRoastId(), async (req: Request, res: Response) => {
       values: updatedValues,
     };
     await updateRow(updateArgs);
-    res.status(200).send("Successfully updated");
+    const data = { id, ...updatedValues };
+    // Send status, data, & message
+    res.status(200).send({ data, message: "Successfully updated" });
   } catch (err) {
     console.log(err);
     res.status(400).send(resErrors(["Failed to update roast"]));
@@ -105,7 +110,10 @@ router.delete(
         where: { user_email: req.user.email, id: req.params.id },
       };
       await deleteRow(args);
-      res.status(200).send("Successfully deleted roast");
+      res.status(200).send({
+        data: { id: req.params.id },
+        message: "Successfully deleted roast",
+      });
     } catch (err) {
       console.log(err);
       res.status(400).send(resErrors(["Failed to delete roast"]));

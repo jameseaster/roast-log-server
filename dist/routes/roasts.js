@@ -66,8 +66,11 @@ router.post("/", (0, helpers_1.validateCreateRoast)(), (req, res) => __awaiter(v
     try {
         const table = constants_1.constants.roastTable;
         const values = Object.assign(Object.assign({}, req.body), { user_email: req.user.email });
-        yield (0, sqlQueries_1.newRow)({ table, values });
-        res.status(201).send("Created roast");
+        const [result] = yield (0, sqlQueries_1.newRow)({ table, values });
+        const newUserId = result.insertId;
+        const data = Object.assign({ id: newUserId }, values);
+        // Send status, data, & message
+        res.status(201).send({ data, message: "Created roast" });
     }
     catch (err) {
         console.log(err);
@@ -104,7 +107,9 @@ router.patch("/", (0, helpers_1.validateRoastId)(), (req, res) => __awaiter(void
             values: updatedValues,
         };
         yield (0, sqlQueries_1.updateRow)(updateArgs);
-        res.status(200).send("Successfully updated");
+        const data = Object.assign({ id }, updatedValues);
+        // Send status, data, & message
+        res.status(200).send({ data, message: "Successfully updated" });
     }
     catch (err) {
         console.log(err);
@@ -122,7 +127,10 @@ router.delete("/:id", (0, helpers_1.validateDeleteParam)(), (req, res) => __awai
             where: { user_email: req.user.email, id: req.params.id },
         };
         yield (0, sqlQueries_1.deleteRow)(args);
-        res.status(200).send("Successfully deleted roast");
+        res.status(200).send({
+            data: { id: req.params.id },
+            message: "Successfully deleted roast",
+        });
     }
     catch (err) {
         console.log(err);

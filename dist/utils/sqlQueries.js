@@ -12,7 +12,7 @@ const newRow = ({ table, values }) => {
         .map((v) => `'${v}'`)
         .join(", ");
     const sqlStr = `insert into ${table} (${keyStr}) values(${valueStr});`;
-    return (0, index_1.dbQuery)(sqlStr);
+    return (0, index_1.dbCreate)(sqlStr);
 };
 exports.newRow = newRow;
 /**
@@ -29,7 +29,7 @@ exports.selectAll = selectAll;
 /**
  * Updates row in table based on where and values objects
  */
-const updateRow = ({ table, where, values }) => {
+const updateRow = ({ table, where, values, }) => {
     const setStr = Object.keys(values)
         .map((k) => `${k} = '${values[k]}'`)
         .join(", ");

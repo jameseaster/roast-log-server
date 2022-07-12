@@ -1,9 +1,9 @@
-import { FieldPacket, RowDataPacket } from "mysql2";
+import { FieldPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 
 // Types
 export type TableName = "users" | "roasts";
-
-export type SqlReturn = Promise<[IResponseUser[], FieldPacket[]]>;
+export type SqlQueryReturn = Promise<[IResponseUser[], FieldPacket[]]>;
+export type SqlCreateReturn = Promise<[ResultSetHeader, FieldPacket[]]>;
 
 // Interfaces
 export interface IConstants {
@@ -15,6 +15,15 @@ export interface IResponseUser extends RowDataPacket {
   id: number;
   email: string;
   password: string;
+}
+
+export interface ICreateResponse extends RowDataPacket {
+  fieldCount: number;
+  affectedRows: number;
+  insertId: number;
+  info: string;
+  serverStatus: number;
+  warningStatus: number;
 }
 
 export interface ICreateRoast {

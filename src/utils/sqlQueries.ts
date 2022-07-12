@@ -1,18 +1,18 @@
 // Imports
-import { dbQuery } from "@db/index";
-import { SqlReturn } from "@utils/types";
+import { dbCreate, dbQuery } from "@db/index";
+import { SqlQueryReturn, SqlCreateReturn } from "@utils/types";
 import { IUpdateRow, INewRow, ISelectAll, IDeleteRow } from "@utils/types";
 
 /**
  * Adds new row to given table with values
  */
-export const newRow = ({ table, values }: INewRow): SqlReturn => {
+export const newRow = ({ table, values }: INewRow): SqlCreateReturn => {
   const keyStr = Object.keys(values).join(", ");
   const valueStr = Object.values(values)
     .map((v) => `'${v}'`)
     .join(", ");
   const sqlStr = `insert into ${table} (${keyStr}) values(${valueStr});`;
-  return dbQuery(sqlStr);
+  return dbCreate(sqlStr);
 };
 
 /**
@@ -23,7 +23,7 @@ export const selectAll = ({
   order,
   where,
   column,
-}: ISelectAll): SqlReturn => {
+}: ISelectAll): SqlQueryReturn => {
   const whereStr = createWhereStr(where);
   const columnStr = column ? column : "*";
   const orderStr = order ? `order by ${order?.join(", ")}` : "";
@@ -34,7 +34,11 @@ export const selectAll = ({
 /**
  * Updates row in table based on where and values objects
  */
-export const updateRow = ({ table, where, values }: IUpdateRow): SqlReturn => {
+export const updateRow = ({
+  table,
+  where,
+  values,
+}: IUpdateRow): SqlQueryReturn => {
   const setStr = Object.keys(values)
     .map((k) => `${k} = '${values[k]}'`)
     .join(", ");
@@ -46,7 +50,7 @@ export const updateRow = ({ table, where, values }: IUpdateRow): SqlReturn => {
 /**
  * Deletes row from table based on where values
  */
-export const deleteRow = ({ table, where }: IDeleteRow): SqlReturn => {
+export const deleteRow = ({ table, where }: IDeleteRow): SqlQueryReturn => {
   const whereStr = createWhereStr(where);
   const sqlStr = `delete from ${table} ${whereStr}`;
   return dbQuery(sqlStr);
